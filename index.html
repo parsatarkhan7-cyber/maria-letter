@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Letter for Maria</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at center, #241719 0%, #100d0f 55%, #050505 100%);
+  color: #e9d9c2;
+  font-family: Georgia, serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.scene {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 28px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: #9b7772;
+  margin-bottom: 42px;
+  text-transform: uppercase;
+}
+
+.envelope {
+  position: relative;
+  width: 280px;
+  height: 180px;
+  background: #191416;
+  border: 1px solid #55403d;
+  box-shadow: 0 25px 65px #000b;
+  cursor: pointer;
+  transition: transform 1s, opacity 1s;
+  perspective: 900px;
+}
+
+.envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, transparent 49.5%, #302123 50%),
+              linear-gradient(215deg, transparent 49.5%, #241a1d 50%);
+  z-index: 2;
+}
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 139px solid transparent;
+  border-right: 139px solid transparent;
+  border-top: 105px solid #382426;
+  transform-origin: top;
+  transition: transform 1s ease;
+  z-index: 4;
+}
+
+.seal {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #a94743, #671d25 65%, #340e15);
+  box-shadow: 0 3px 12px #0009, inset 0 0 0 2px #8d4541;
+  top: 72px;
+  left: calc(50% - 24px);
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  color: #d9a9a0;
+  font-size: 23px;
+  transition: opacity .5s, transform .7s;
+}
+
+.letter {
+  position: absolute;
+  width: 240px;
+  height: 145px;
+  left: 19px;
+  top: 18px;
+  background: #e4d2b2;
+  color: #32221e;
+  padding: 20px 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  opacity: 0;
+  z-index: 1;
+  transition: transform 1.5s ease, opacity 1s;
+}
+
+.hint {
+  margin-top: 36px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #ad8980;
+  animation: breathe 2.5s infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: .45; }
+  50% { opacity: 1; }
+}
+
+.open .flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.open .seal {
+  opacity: 0;
+  transform: scale(1.5);
+}
+
+.open .letter {
+  opacity: 1;
+  transform: translateY(-100px);
+  z-index: 6;
+}
+
+.open .envelope {
+  transform: translateY(35px);
+}
+
+.message {
+  display: none;
+  max-width: 340px;
+  width: 100%;
+  margin-top: 65px;
+  padding: 28px 22px;
+  background: linear-gradient(135deg, #e8d9bc, #cbb28e);
+  color: #30201c;
+  box-shadow: 0 15px 60px #0009;
+  text-align: left;
+  line-height: 2;
+  font-size: 16px;
+  animation: appear 1.5s ease both;
+}
+
+.message h2 {
+  font-weight: normal;
+  font-style: italic;
+  text-align: center;
+  margin: 0 0 22px;
+}
+
+.message p {
+  white-space: pre-line;
+}
+
+.signature {
+  text-align: right;
+  font-style: italic;
+  margin-top: 28px;
+}
+
+.scene.revealed {
+  justify-content: flex-start;
+  padding-top: 35px;
+}
+
+.scene.revealed .eyebrow,
+.scene.revealed .hint {
+  display: none;
+}
+
+.scene.revealed .envelope {
+  display: none;
+}
+
+.scene.revealed .message {
+  display: block;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+button {
+  margin-top: 22px;
+  padding: 12px 22px;
+  border: 1px solid #8d655c;
+  background: transparent;
+  color: #6d453e;
+  font-family: Georgia, serif;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+
+<body>
+<main class="scene" id="scene">
+
+  <div class="eyebrow">A SECRET FOR MARIA</div>
+
+  <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the letter">
+    <div class="letter">
+      For the girl who found her way<br>
+      into a world she never knew existed...
+    </div>
+    <div class="flap"></div>
+    <div class="seal">M</div>
+  </div>
+
+  <div class="hint" id="hint">TOUCH THE SEAL</div>
+
+  <article class="message" id="message">
+    <h2>My dearest Maria</h2>
+
+    <p id="letterText"></p>
+
+    <div class="signature">Yours, in every silence.</div>
+  </article>
+
+</main>
+
+<script>
+const envelope = document.getElementById("envelope");
+const scene = document.getElementById("scene");
+const hint = document.getElementById("hint");
+const letterText = document.getElementById("letterText");
+
+const message = `Some feelings are too deep to be explained by ordinary words.
+
+So I wanted to create a little world just for you.
+
+A place hidden from the noise of everything outside. A place where the rain never stops, the piano plays softly in the dark, and every word carries a piece of my heart.
+
+Maybe this is only a little letter on a screen.
+
+But behind it is someone who hopes you never forget how special you are.
+
+Tonight, this little secret belongs only to you.`;
+
+let opened = false;
+
+function openLetter() {
+  if (opened) return;
+  opened = true;
+
+  envelope.classList.add("open");
+  hint.textContent = "SOME SECRETS TAKE TIME";
+
+  setTimeout(() => {
+    scene.classList.add("revealed");
+    let index = 0;
+
+    function typeNext() {
+      if (index < message.length) {
+        letterText.textContent += message[index];
+        index++;
+        setTimeout(typeNext, message[index - 1] === "\n" ? 350 : 32);
+      }
+    }
+
+    typeNext();
+  }, 2300);
+}
+
+envelope.addEventListener("click", openLetter);
+envelope.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openLetter();
+  }
+});
+</script>
+</body>
+</html>
