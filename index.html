@@ -3,21 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#17110f">
+<meta name="theme-color" content="#100c0d">
 <title>A Letter from the Shadows</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Marck+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Marck+Script&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --night: #17110f;
-  --burgundy: #521923;
-  --burgundy-dark: #301016;
-  --paper: #e8d7b2;
-  --ink: #28201b;
-  --gold: #ad8b5b;
+  --wine: #571b2a;
+  --wine-dark: #310e18;
+  --paper: #e8d8b8;
+  --ink: #30221d;
+  --gold: #b49a72;
 }
 
 * {
@@ -25,17 +24,19 @@
 }
 
 html {
+  background: #100c0d;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  color: #e8dcc8;
-  font-family: "Cormorant Garamond", serif;
-  background:
-    radial-gradient(ellipse at 50% 42%, #38221e 0%, #211715 43%, #100d0c 100%);
+  min-height: 100svh;
   overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at 50% 45%, #392327 0%, #211619 43%, #100c0d 100%);
+  color: #e5d5bd;
+  font-family: "Cormorant Garamond", serif;
 }
 
 button {
@@ -43,120 +44,318 @@ button {
 }
 
 .scene {
+  min-height: 100vh;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 35px 16px 30px;
   position: relative;
+  padding: 28px 16px;
   isolation: isolate;
-  transition: background 1.2s ease;
 }
 
 .scene::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
   opacity: .15;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
-  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
 }
 
 .intro {
   text-align: center;
-  margin-bottom: 34px;
+  margin-bottom: 40px;
   transition: opacity .8s ease, transform .8s ease;
 }
 
 .intro h1 {
-  font-size: clamp(27px, 6vw, 42px);
-  font-weight: 500;
-  letter-spacing: 1.5px;
   margin: 0 0 8px;
-  color: #dfc8a5;
+  font-size: clamp(28px, 7vw, 40px);
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #ddc7ad;
 }
 
 .intro p {
-  font-size: 13px;
+  margin: 0;
+  font-size: 12px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  margin: 0;
-  color: #9d8270;
+  color: #a78b85;
 }
+
+/* صحنه و فاصله دوربین */
 
 .envelope-area {
+  width: min(86vw, 355px);
+  height: 370px;
   position: relative;
-  width: min(88vw, 370px);
-  height: 390px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  perspective: 1000px;
-  transition: transform 1.2s ease;
+  flex: 0 0 auto;
+  perspective: 1100px;
+  transform: scale(.88);
+  transform-origin: center center;
+  transition: transform 1.5s cubic-bezier(.2,.7,.2,1);
 }
 
-/* کاغذهای قدیمی پشت پاکت */
+/* کاغذهای کهنه پشت پاکت */
 
 .paper-back {
   position: absolute;
-  width: 83%;
-  height: 220px;
-  bottom: 43px;
+  width: 87%;
+  height: 225px;
   left: 50%;
-  transform: translateX(-50%);
+  bottom: 43px;
   background:
-    radial-gradient(ellipse at 12% 20%, #fff4d8 0%, transparent 40%),
-    linear-gradient(125deg, #e5d5b2, #cbb58b 70%, #e0cda8);
-  box-shadow: 0 9px 25px #0008;
-  border: 1px solid #a9946e;
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 23px,
+      #81674619 24px,
+      transparent 25px
+    ),
+    linear-gradient(125deg, #d2c09d, #eee1c4 48%, #c9b48e);
+  border: 1px solid #a99470;
+  box-shadow: 0 12px 22px #0007;
+  transition: opacity .7s ease;
 }
 
 .paper-back.one {
-  transform: translateX(-50%) rotate(-7deg);
-  bottom: 48px;
+  transform: translateX(-50%) rotate(-4deg);
+  bottom: 47px;
 }
 
 .paper-back.two {
-  transform: translateX(-50%) rotate(5deg);
+  width: 90%;
+  transform: translateX(-50%) rotate(3deg);
   bottom: 44px;
-  width: 85%;
+  background:
+    linear-gradient(115deg, #d2c09e, #e6d7b5 60%, #c7b28c);
 }
 
-/* خود نامه؛ اندازه در تمام مراحل ثابت است */
+/* پاکت */
+
+.envelope {
+  position: absolute;
+  width: 100%;
+  height: 220px;
+  left: 0;
+  bottom: 35px;
+  z-index: 3;
+  overflow: visible;
+  border: 1px solid #783a43;
+  border-radius: 2px;
+  background:
+    radial-gradient(ellipse at 27% 16%, #792f3d 0%, transparent 53%),
+    repeating-linear-gradient(
+      115deg,
+      transparent 0 4px,
+      #15060b13 5px,
+      transparent 6px
+    ),
+    linear-gradient(145deg, #652433, #4e1724 55%, #310e18);
+  box-shadow:
+    0 22px 36px #0008,
+    inset 0 1px 1px #c17c7744,
+    inset 0 -4px 10px #18070c77;
+  transition: opacity .8s ease, transform .8s ease;
+}
+
+/* چین‌های جلوی پاکت */
+
+.envelope-front {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.envelope-front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(32deg, transparent 49.5%, #7e3542 50%, #41121e 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.envelope-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(148deg, transparent 49.5%, #702638 50%, #351019 100%);
+  clip-path: polygon(0 0, 0 100%, 50% 54%, 100% 100%, 100% 0);
+  opacity: .7;
+}
+
+/* نشانی روی پاکت */
+
+.address {
+  position: absolute;
+  left: 17px;
+  bottom: 14px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+
+.address span {
+  font-family: "Marck Script", cursive;
+  font-size: 21px;
+  color: #211014;
+  text-shadow: 0 1px 1px #bd858055;
+}
+
+.address .line {
+  width: 92px;
+  height: 1px;
+  margin-top: 1px;
+  background: #28101688;
+}
+
+/* در پاکت */
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 122px;
+  z-index: 5;
+  transform-origin: top center;
+  backface-visibility: visible;
+  transform: rotateX(0deg);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background:
+    linear-gradient(155deg, #762c3c, #581b2b 60%, #3a111c);
+  filter: drop-shadow(0 3px 3px #17070b55);
+  transition: transform 1s ease;
+}
+
+/* مهر مومی */
+
+.seal {
+  position: absolute;
+  top: 74px;
+  left: 50%;
+  z-index: 7;
+  width: 69px;
+  height: 69px;
+  padding: 0;
+  border: 1px solid #a64d58;
+  border-radius: 46% 54% 51% 48% / 52% 46% 54% 48%;
+  transform: translateX(-50%) rotate(-5deg);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(ellipse at 30% 23%, #bd5c65 0%, transparent 32%),
+    radial-gradient(ellipse at 70% 80%, #3c0d17 0%, transparent 48%),
+    linear-gradient(135deg, #8b2939, #681a2b 60%, #420f1d);
+  box-shadow:
+    0 5px 9px #0008,
+    inset 0 2px 3px #e79b9b44,
+    inset 0 -4px 6px #25070e99;
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.seal::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid #d58b8a55;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px #320a1444;
+}
+
+.seal::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  width: 15px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f0b2aa44;
+  filter: blur(2px);
+}
+
+/* گربه کاملاً سیاه */
+
+.cat-mark {
+  position: absolute;
+  inset: 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 24px);
+  filter: drop-shadow(0 1px 1px #21070b77);
+}
+
+.cat-mark .cat {
+  fill: #16080c;
+  stroke: #16080c;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.cat-mark .eye {
+  fill: #7b2836;
+  stroke: none;
+}
+
+/* نوشته زیر پاکت */
+
+.seal-caption {
+  margin-top: 16px;
+  text-align: center;
+  color: #a98b80;
+  font-size: 14px;
+  letter-spacing: 2px;
+  animation: breathe 2.5s ease-in-out infinite;
+  transition: opacity .4s ease;
+}
+
+/* نامه؛ اندازه ثابت می‌ماند */
 
 .letter {
   position: absolute;
-  z-index: 2;
-  width: min(82vw, 320px);
-  height: 285px;
-  bottom: 53px;
+  z-index: 1;
+  width: min(80vw, 310px);
+  height: 270px;
   left: 50%;
-  transform: translate(-50%, 0);
-  padding: 25px 22px;
-  color: var(--ink);
-  background:
-    radial-gradient(ellipse at 15% 15%, #f6e9ca 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 90%, #c8b28a 0%, transparent 50%),
-    linear-gradient(130deg, #e8d9b7, #ddc9a1);
-  border: 1px solid #b5a078;
-  box-shadow: 0 5px 20px #0005;
+  bottom: 53px;
+  padding: 23px 21px 16px;
   overflow: hidden;
+  color: var(--ink);
+  border: 1px solid #b5a078;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 23px,
+      #81674618 24px,
+      transparent 25px
+    ),
+    radial-gradient(ellipse at 18% 12%, #f5e9cf, transparent 50%),
+    linear-gradient(125deg, #e9dbba, #e2d0a9 65%, #d5c09a);
+  box-shadow: 0 8px 24px #0007;
   opacity: 0;
   visibility: hidden;
+  transform: translate(-50%, 15px);
   transition:
-    transform 1.2s cubic-bezier(.2,.7,.2,1),
-    opacity .7s ease,
-    height .7s ease,
-    visibility .7s;
+    transform 1.1s cubic-bezier(.2,.7,.2,1),
+    opacity .6s ease,
+    visibility .6s;
 }
 
 .letter::before {
   content: "";
   position: absolute;
   inset: 9px;
-  border: 1px solid #9c835a55;
+  border: 1px solid #9a80564a;
   pointer-events: none;
 }
 
@@ -174,67 +373,62 @@ button {
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #9c8158 transparent;
-  padding: 2px 2px 12px;
-  animation: pageAppear .45s ease both;
+  scrollbar-color: #a58a62 transparent;
+  padding: 0 2px 8px;
 }
 
 .page.active {
   display: block;
+  animation: pageIn .4s ease both;
 }
 
 .page h2 {
-  font-family: "Marck Script", cursive;
-  font-size: 29px;
-  font-weight: 400;
-  margin: 5px 0 17px;
+  margin: 0 0 14px;
   text-align: center;
-  color: #57262a;
+  font-family: "Marck Script", cursive;
+  font-size: 27px;
+  font-weight: 400;
+  color: #5a2630;
 }
 
 .page p {
-  font-size: 17px;
-  line-height: 1.75;
-  margin: 0 0 14px;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0 0 12px;
   overflow-wrap: anywhere;
 }
 
-.page .small-line {
-  width: 48px;
+.page-divider {
+  width: 42px;
   height: 1px;
-  background: #99764d;
-  margin: 18px auto;
+  margin: 14px auto;
+  background: #94754e;
 }
 
-.page-number {
+.page-footer {
+  padding-top: 7px;
   text-align: center;
+  color: #826b4d;
   font-size: 12px;
-  color: #796447;
-  padding-top: 5px;
 }
 
 .page-controls {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-top: 8px;
-  padding-top: 10px;
-  border-top: 1px solid #a9916b66;
+  align-items: center;
+  gap: 8px;
+  padding-top: 9px;
+  margin-top: 6px;
+  border-top: 1px solid #9e835d66;
 }
 
 .page-controls button {
-  border: 1px solid #8d7251;
-  color: #49372b;
-  background: #e5d2ad;
-  padding: 7px 12px;
+  border: 1px solid #9a805d;
+  background: #e3d0ac;
+  color: #433126;
+  padding: 5px 10px;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background .2s ease;
-}
-
-.page-controls button:hover {
-  background: #d2bb91;
 }
 
 .page-controls button:disabled {
@@ -243,197 +437,47 @@ button {
 }
 
 .page-count {
-  font-size: 13px;
-  color: #796447;
+  font-size: 12px;
+  color: #80684a;
   white-space: nowrap;
 }
 
-/* پاکت */
+/* دکمه پایان نامه */
 
-.envelope {
-  position: absolute;
-  width: 100%;
-  height: 225px;
-  bottom: 35px;
-  left: 0;
-  z-index: 3;
-  background:
-    radial-gradient(ellipse at 30% 20%, #762d38 0%, transparent 55%),
-    linear-gradient(145deg, #64212c, #47151e 58%, #351016);
-  box-shadow:
-    0 25px 45px #0009,
-    inset 0 0 20px #20070b88;
-  border: 1px solid #7c3b41;
-  border-radius: 2px;
-  transition: opacity .9s ease, transform .9s ease;
-}
-
-/* بافت پارچه‌ای و کاغذی روی پاکت */
-
-.envelope::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: .13;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      #e5b8a0 4px,
-      transparent 5px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 4px,
-      #140509 5px,
-      transparent 6px
-    );
-}
-
-.envelope-front {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.envelope-front::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(32deg, transparent 49.5%, #301016aa 50%, transparent 50.6%),
-    linear-gradient(-32deg, transparent 49.5%, #301016aa 50%, transparent 50.6%);
-}
-
-.address {
-  position: absolute;
-  left: 19px;
-  bottom: 17px;
-  z-index: 3;
-  color: #1e0e10;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  transform: rotate(-3deg);
-}
-
-.address .for {
-  font-family: "Marck Script", cursive;
-  font-size: 23px;
-  font-weight: 400;
-  text-shadow: 0 1px 1px #b76b70;
-}
-
-.address .line {
-  width: 105px;
-  height: 1px;
-  background: #28101488;
-  margin-top: 2px;
-  transform: rotate(-1deg);
-}
-
-/* درِ پاکت */
-
-.flap {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 120px;
-  z-index: 4;
-  transform-origin: top center;
-  transform: rotateX(0deg);
-  transition: transform 1.1s ease;
-  backface-visibility: visible;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  background:
-    linear-gradient(160deg, #762a36, #521923 65%, #3b1119);
-  filter: drop-shadow(0 4px 3px #17080a66);
-}
-
-.seal {
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  top: 72px;
-  transform: translateX(-50%);
-  width: 75px;
-  height: 75px;
-  border: none;
-  border-radius: 47% 53% 48% 52% / 53% 46% 54% 47%;
-  cursor: pointer;
-  padding: 0;
-  color: #21090d;
-  background:
-    radial-gradient(ellipse at 32% 24%, #a6474b 0%, transparent 32%),
-    radial-gradient(ellipse at 65% 75%, #3b0d15 0%, transparent 45%),
-    linear-gradient(145deg, #79212d, #a52e3c 40%, #681925 75%, #3c1017);
-  box-shadow:
-    0 4px 8px #16060999,
-    inset 0 2px 3px #d66a6a77,
-    inset 0 -5px 7px #21070b99;
-  transition:
-    opacity .55s ease,
-    transform .55s ease,
-    filter .4s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.seal::before {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  border: 1px solid #d06a6b66;
-  border-radius: 48% 52% 47% 53% / 52% 47% 53% 48%;
-  box-shadow: inset 0 0 0 2px #3c0e1544;
-}
-
-.seal::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 7px;
-  top: 9px;
-  left: 13px;
-  border-radius: 50%;
-  transform: rotate(-35deg);
-  background: #e8a1a033;
-  filter: blur(2px);
-}
-
-.seal:hover {
-  filter: brightness(1.12);
-}
-
-.seal svg {
-  position: absolute;
-  inset: 14px;
-  width: calc(100% - 28px);
-  height: calc(100% - 28px);
-  filter: drop-shadow(0 1px 1px #c66b6b33);
-}
-
-.seal-caption {
-  margin-top: 20px;
-  color: #a88a78;
-  font-size: 14px;
-  letter-spacing: 2px;
+.burn-area {
+  display: none;
+  margin-top: 15px;
   text-align: center;
-  transition: opacity .5s ease;
-  animation: breathe 2.5s ease-in-out infinite;
+  animation: pageIn .8s ease both;
 }
 
-/* باز شدن پاکت */
+.burn-area p {
+  margin: 0 0 10px;
+  color: #b49a88;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.burn-button {
+  padding: 9px 19px;
+  border: 1px solid #78404a;
+  background: #301219;
+  color: #d9b6a8;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.burn-button:active {
+  background: #59202b;
+}
+
+/* وقتی نامه بیرون می‌آید */
 
 .scene.open .seal {
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) scale(.6) rotate(-25deg);
+  transform: translateX(-50%) scale(.65) rotate(-18deg);
 }
 
 .scene.open .flap {
@@ -443,87 +487,191 @@ button {
 .scene.open .letter {
   visibility: visible;
   opacity: 1;
-  z-index: 5;
-  transform: translate(-50%, -85px);
-}
-
-.scene.open .seal-caption {
-  opacity: 0;
+  z-index: 6;
+  transform: translate(-50%, -105px);
 }
 
 .scene.open .intro {
-  opacity: .45;
-  transform: translateY(-8px);
+  opacity: .6;
 }
 
-/* حالت مطالعه؛ خود کاغذ بزرگ نمی‌شود */
-
-.scene.reading {
-  justify-content: flex-start;
-  padding-top: 25px;
-  padding-bottom: 30px;
-}
+/* حالت خواندن: دوربین نزدیک‌تر می‌شود
+   اما اندازه خود کاغذ ثابت است */
 
 .scene.reading .intro {
-  margin-bottom: 12px;
-  opacity: .9;
+  margin-bottom: 8px;
 }
 
 .scene.reading .intro h1 {
-  font-size: 25px;
+  font-size: 27px;
 }
 
 .scene.reading .intro p {
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .scene.reading .envelope-area {
-  height: 440px;
-  width: min(88vw, 370px);
-  flex: 0 0 auto;
+  transform: scale(.98);
 }
 
 .scene.reading .letter {
-  width: min(82vw, 320px);
-  height: 285px;
-  bottom: 53px;
-  transform: translate(-50%, -85px);
-  overflow: hidden;
-  opacity: 1;
-  visibility: visible;
-  z-index: 5;
-}
-
-.scene.reading .envelope {
-  transform: translateY(35px);
-  opacity: .8;
+  width: min(80vw, 310px);
+  height: 270px;
+  transform: translate(-50%, -105px);
 }
 
 .scene.reading .seal-caption {
-  display: none;
+  opacity: 0;
 }
 
-.scene.reading .paper-back {
+/* آتش؛ فقط پس از پایان نامه */
+
+.fire {
+  position: absolute;
+  inset: -28px -12px -22px;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity .5s ease;
+}
+
+.fire::before,
+.fire::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background:
+    radial-gradient(ellipse at 20% 100%, #ffb33b 0%, #e6531c 28%, transparent 58%),
+    radial-gradient(ellipse at 50% 100%, #ffda68 0%, #ec5721 35%, transparent 64%),
+    radial-gradient(ellipse at 80% 100%, #ff9c35 0%, #b72b18 37%, transparent 66%);
+  filter: blur(5px);
+}
+
+.fire::before {
+  animation: flames 1.15s ease-in-out infinite alternate;
+}
+
+.fire::after {
   opacity: .8;
+  filter: blur(11px);
+  animation: flames 1.5s ease-in-out infinite alternate-reverse;
 }
 
-@keyframes pageAppear {
+.ember {
+  position: absolute;
+  bottom: 8%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffb84d;
+  box-shadow: 0 0 8px #ff6228;
+  opacity: 0;
+}
+
+.scene.burning .fire {
+  opacity: 1;
+}
+
+.scene.burning .fire::before,
+.scene.burning .fire::after {
+  height: 100%;
+}
+
+.scene.burning .envelope,
+.scene.burning .paper-back,
+.scene.burning .letter {
+  animation: burnAway 4.8s ease-in forwards;
+}
+
+.scene.burning .intro,
+.scene.burning .seal-caption,
+.scene.burning .burn-area {
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+.ending {
+  display: none;
+  max-width: 300px;
+  margin-top: 22px;
+  text-align: center;
+  color: #d7c0a8;
+  opacity: 0;
+}
+
+.scene.finished .ending {
+  display: block;
+  animation: endingIn 2s ease forwards;
+}
+
+.ending h2 {
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0 0 7px;
+}
+
+.ending p {
+  color: #a58b7d;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flames {
+  0% {
+    transform: scaleX(.93) skewX(-3deg);
+  }
+  50% {
+    transform: scaleX(1.03) skewX(3deg);
+  }
+  100% {
+    transform: scaleX(.97) skewX(-2deg);
+  }
+}
+
+@keyframes burnAway {
+  0% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  25% {
+    opacity: 1;
+    filter: brightness(1.45) sepia(.45);
+  }
+  65% {
+    opacity: .7;
+    filter: brightness(.7) sepia(.8);
+  }
+  100% {
+    opacity: 0;
+    filter: brightness(.2) sepia(1);
+  }
+}
+
+@keyframes endingIn {
   from {
     opacity: 0;
-    transform: translateY(5px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
-@keyframes breathe {
-  0%, 100% { opacity: .6; }
-  50% { opacity: 1; }
-}
-
-/* موبایل‌های کوچک */
 
 @media (max-width: 360px) {
   .scene {
@@ -532,19 +680,20 @@ button {
   }
 
   .envelope-area {
-    width: 94vw;
+    width: 92vw;
+    transform: scale(.84);
+  }
+
+  .scene.reading .envelope-area {
+    transform: scale(.91);
   }
 
   .letter {
-    padding: 20px 17px;
+    padding: 21px 17px 14px;
   }
 
   .page p {
-    font-size: 16px;
-  }
-
-  .address .for {
-    font-size: 21px;
+    font-size: 15px;
   }
 }
 
@@ -552,7 +701,6 @@ button {
   *, *::before, *::after {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 </style>
@@ -572,7 +720,8 @@ button {
     <div class="paper-back one"></div>
     <div class="paper-back two"></div>
 
-    <!-- صفحات نامه -->
+    <!-- نامه از ابتدا پشت پاکت پنهان است -->
+
     <article class="letter" id="letter">
 
       <div class="letter-content">
@@ -584,7 +733,7 @@ button {
             and some are written because silence
             has become too heavy to carry
           </p>
-          <div class="small-line"></div>
+          <div class="page-divider"></div>
           <p>
             This one belongs to you
             and only you
@@ -594,11 +743,11 @@ button {
         <section class="page">
           <h2>A little secret</h2>
           <p>
-            There are things that are difficult
-            to explain in ordinary words
+            There are things that ordinary words
+            can never explain
           </p>
           <p>
-            So I decided to leave them here
+            So I left a little of them here
             between the shadows and the ink
             where they can wait for you
           </p>
@@ -607,10 +756,10 @@ button {
         <section class="page">
           <h2>For you</h2>
           <p>
-            If the world ever feels too loud
-            remember that you do not have to
-            be strong every single moment
+            You do not have to be strong
+            every single moment
           </p>
+          <div class="page-divider"></div>
           <p>
             Even the darkest nights eventually
             give way to morning
@@ -620,96 +769,123 @@ button {
         <section class="page">
           <h2>The last page</h2>
           <p>
-            And if you have made it this far
-            then perhaps the secret was never
-            hidden in the letter itself
+            Maybe the secret was never hidden
+            in the letter itself
           </p>
-          <div class="small-line"></div>
           <p>
-            Perhaps it was always in the person
+            Maybe it was always in the person
             for whom it was written
           </p>
         </section>
 
-        <div class="page-number" id="pageNumber">01</div>
+        <div class="page-footer" id="pageNumber">01</div>
 
-        <div class="page-controls">
-          <button id="prevBtn" type="button" disabled>Previous</button>
+        <div class="page-controls" id="pageControls">
+          <button id="prevBtn" type="button" disabled>
+            Previous
+          </button>
+
           <span class="page-count" id="pageCount">1 / 4</span>
-          <button id="nextBtn" type="button">Next page</button>
+
+          <button id="nextBtn" type="button">
+            Next page
+          </button>
         </div>
 
       </div>
     </article>
 
-    <!-- پاکت -->
+    <!-- پاکت نامه -->
+
     <div class="envelope" id="envelope">
 
       <div class="envelope-front"></div>
 
       <div class="address">
-        <span class="for">For Harley Quinn</span>
+        <span>For Harley Quinn</span>
         <span class="line"></span>
       </div>
 
       <div class="flap"></div>
 
-      <!-- مُهر مومی با نقش گربه و رز -->
-      <button class="seal" id="sealBtn" type="button"
-              aria-label="Open the letter">
+      <!-- مهر مومی با گربه کاملاً سیاه -->
 
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <button class="seal" id="sealBtn"
+              type="button" aria-label="Open the letter">
 
-          <!-- ساقه و برگ‌های رز -->
-          <g fill="none" stroke="#26090e" stroke-width="3.2"
-             stroke-linecap="round" stroke-linejoin="round">
+        <svg class="cat-mark"
+             viewBox="0 0 100 100"
+             xmlns="http://www.w3.org/2000/svg">
 
-            <path d="M52 49 C57 59 49 70 43 76"/>
-            <path d="M52 62 C61 57 67 59 69 64"/>
-            <path d="M48 68 C39 62 33 64 31 69"/>
+          <path class="cat"
+            d="M18 38
+               L15 8
+               Q15 5 19 9
+               L38 25
+               Q50 19 62 25
+               L81 9
+               Q85 5 85 9
+               L82 39
+               Q93 53 83 69
+               Q72 87 50 87
+               Q28 87 17 69
+               Q7 53 18 38 Z"/>
 
-            <path d="M51 58
-                     C39 56 36 45 43 39
-                     C46 34 53 34 57 39
-                     C64 36 70 43 66 49
-                     C63 54 57 57 51 58Z"/>
+          <path class="cat"
+            d="M29 48
+               Q38 39 45 49
+               Q38 57 29 48 Z"/>
 
-            <path d="M49 48
-                     C43 44 48 38 53 42
-                     C58 46 53 51 49 48Z"/>
+          <path class="cat"
+            d="M55 49
+               Q62 39 71 48
+               Q62 57 55 49 Z"/>
 
-            <!-- صورت گربه -->
-            <path d="M19 29 L20 12 L35 22
-                     Q43 18 51 22
-                     L66 12 L67 30
-                     Q77 41 69 53
-                     Q60 65 43 63
-                     Q25 62 18 48
-                     Q14 38 19 29Z"/>
+          <path class="cat"
+            d="M44 61
+               L50 65
+               L56 61
+               Q53 72 50 72
+               Q47 72 44 61 Z"/>
 
-            <!-- چشم‌ها -->
-            <path d="M27 37 Q33 31 39 37"/>
-            <path d="M47 37 Q53 31 59 37"/>
+          <path class="eye"
+            d="M33 48 L39 48 L36 52 Z"/>
 
-            <!-- بینی و سبیل -->
-            <path d="M39 43 L43 46 L47 43"/>
-            <path d="M43 46 L43 51"/>
-            <path d="M36 48 L24 46"/>
-            <path d="M36 52 L25 55"/>
-            <path d="M50 48 L62 46"/>
-            <path d="M50 52 L61 55"/>
-
-          </g>
+          <path class="eye"
+            d="M61 48 L67 48 L64 52 Z"/>
 
         </svg>
       </button>
 
     </div>
+
+    <div class="fire" id="fire">
+      <span class="ember" style="left:18%;animation:flames 1s infinite alternate"></span>
+      <span class="ember" style="left:35%;animation:flames 1.4s infinite alternate"></span>
+      <span class="ember" style="left:58%;animation:flames 1.1s infinite alternate"></span>
+      <span class="ember" style="left:79%;animation:flames 1.3s infinite alternate"></span>
+    </div>
+
   </div>
 
   <div class="seal-caption" id="sealCaption">
-    Break the seal, Harley...
+    Break the seal...
   </div>
+
+  <div class="burn-area" id="burnArea">
+    <p>You have reached the end</p>
+    <button class="burn-button" id="burnBtn" type="button">
+      Burn the past
+    </button>
+  </div>
+
+  <section class="ending" id="ending">
+    <h2>Some secrets never die</h2>
+    <p>
+      Some things disappear from sight
+      but never truly leave us
+    </p>
+  </section>
 
 </main>
 
@@ -721,9 +897,12 @@ const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const pageCount = document.getElementById("pageCount");
 const pageNumber = document.getElementById("pageNumber");
+const burnArea = document.getElementById("burnArea");
+const burnBtn = document.getElementById("burnBtn");
 
 let currentPage = 0;
 let opened = false;
+let burning = false;
 
 function openLetter() {
   if (opened) return;
@@ -734,7 +913,7 @@ function openLetter() {
   window.setTimeout(() => {
     scene.classList.add("reading");
     updatePages();
-  }, 1200);
+  }, 1100);
 }
 
 function updatePages() {
@@ -743,13 +922,26 @@ function updatePages() {
   });
 
   prevBtn.disabled = currentPage === 0;
-  nextBtn.disabled = currentPage === pages.length - 1;
 
-  pageCount.textContent = `${currentPage + 1} / ${pages.length}`;
-  pageNumber.textContent = String(currentPage + 1).padStart(2, "0");
+  pageCount.textContent =
+    `${currentPage + 1} / ${pages.length}`;
+
+  pageNumber.textContent =
+    String(currentPage + 1).padStart(2, "0");
+
+  if (currentPage === pages.length - 1) {
+    nextBtn.textContent = "Finish";
+  } else {
+    nextBtn.textContent = "Next page";
+  }
+
+  burnArea.style.display =
+    currentPage === pages.length - 1 ? "block" : "none";
 }
 
 function changePage(direction) {
+  if (burning) return;
+
   const nextPage = currentPage + direction;
 
   if (nextPage < 0 || nextPage >= pages.length) return;
@@ -758,10 +950,37 @@ function changePage(direction) {
   updatePages();
 }
 
+function burnLetter() {
+  if (burning) return;
+
+  burning = true;
+
+  scene.classList.add("burning");
+
+  window.setTimeout(() => {
+    scene.classList.add("finished");
+  }, 4300);
+}
+
 sealBtn.addEventListener("click", openLetter);
 
-prevBtn.addEventListener("click", () => changePage(-1));
-nextBtn.addEventListener("click", () => changePage(1));
+prevBtn.addEventListener("click", () => {
+  changePage(-1);
+});
+
+nextBtn.addEventListener("click", () => {
+  if (currentPage === pages.length - 1) {
+    burnArea.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+    return;
+  }
+
+  changePage(1);
+});
+
+burnBtn.addEventListener("click", burnLetter);
 
 updatePages();
 </script>
