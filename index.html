@@ -10,16 +10,16 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Marck+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Marck+Script&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
   --W: min(90vw, 340px);      /* عرض پاکت */
-  --lw: min(84vw, 310px);     /* عرض نامه */
-  --lh: 300px;                /* ارتفاع نامه */
-  --env-top: 275px;           /* فاصله بالای پاکت از بالای صحنه */
+  --lw: min(92vw, 350px);     /* عرض نامه */
+  --lh: 480px;                /* ارتفاع نامه */
+  --env-top: 245px;           /* فاصله بالای پاکت از بالای صحنه */
   --fit: 1;
-  --ink: #30221d;
+  --ink: #2e201a;
 }
 
 * { box-sizing: border-box; }
@@ -462,85 +462,182 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
   opacity: 0;
 }
 
-.pages { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+/* ───────── صفحه‌های نامه (مثل دفترچه، با کشیدن ورق می‌خورند) ───────── */
+
+.pages {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.pages:active { cursor: grabbing; }
 
 .page {
   position: absolute;
   inset: 0;
-  overflow-y: auto;
-  padding: 0 2px 8px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(var(--in, 30px));
-  transition: transform .45s ease, opacity .4s ease, visibility 0s linear .45s;
-  scrollbar-width: thin;
-  scrollbar-color: #a58a62 transparent;
+  display: none;
+  overflow: hidden;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27240%27%20height%3D%27240%27%3E%3Cfilter%20id%3D%27p%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.035%20.6%27%20numOctaves%3D%274%27%20seed%3D%273%27%20result%3D%27t%27%2F%3E%3CfeDiffuseLighting%20in%3D%27t%27%20lighting-color%3D%27%23fff%27%20surfaceScale%3D%271.4%27%20result%3D%27l%27%3E%3CfeDistantLight%20azimuth%3D%2750%27%20elevation%3D%2762%27%2F%3E%3C%2FfeDiffuseLighting%3E%3CfeComponentTransfer%20in%3D%27l%27%3E%3CfeFuncR%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3CfeFuncG%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3CfeFuncB%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23p%29%27%2F%3E%3C%2Fsvg%3E"),
+    radial-gradient(circle at 82% 88%, rgba(140,100,50,.20), transparent 38%),
+    radial-gradient(circle at 8% 92%, rgba(120,90,50,.13), transparent 34%),
+    radial-gradient(circle at 92% 6%, rgba(130,95,50,.12), transparent 30%),
+    radial-gradient(ellipse at 18% 12%, #f5e9cf, transparent 55%),
+    linear-gradient(125deg, #e9dbba, #e2d0a9 65%, #d3be96);
+  background-blend-mode: multiply, normal, normal, normal, normal, normal;
 }
-.page.active {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  z-index: 2;
-  transition: transform .45s ease, opacity .4s ease, visibility 0s;
-}
-.page.out {
-  opacity: 0;
-  visibility: visible;
-  transform: translateX(var(--out, -30px));
-  z-index: 3;
-  transition: transform .45s ease, opacity .35s ease, visibility 0s;
+.page.turning { will-change: transform; }
+
+/* جای تاخوردگیِ گوشه‌ی پایین‌چپ روی هر صفحه می‌ماند */
+.page::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  background: linear-gradient(to top right,
+    rgba(80,55,28,.10) 0, rgba(80,55,28,.10) 48%,
+    rgba(70,45,20,.34) 49.5%, rgba(255,248,230,.5) 51%, rgba(255,248,230,0) 53%);
 }
 
-.page h2 {
-  margin: 0 0 14px;
-  text-align: center;
-  font-family: "Marck Script", cursive;
-  font-size: 27px;
-  font-weight: 400;
-  color: #5a2630;
-}
-.page p {
-  font-size: 16.5px;
-  line-height: 1.7;
-  margin: 0 0 12px;
-  overflow-wrap: anywhere;
-  text-shadow: 0 0 .6px rgba(48,34,29,.55);
-}
-.page-divider { width: 42px; height: 1px; margin: 14px auto; background: #94754e; }
+.page-text { position: absolute; overflow: hidden; }
 
-/* متن مثل جوهر روی کاغذ ظاهر می‌شود */
-.letter.revealed .page.active > * { animation: inkIn 1s ease both; }
-.letter.revealed .page.active > *:nth-child(2) { animation-delay: .12s; }
-.letter.revealed .page.active > *:nth-child(3) { animation-delay: .26s; }
-.letter.revealed .page.active > *:nth-child(4) { animation-delay: .4s; }
+.flow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  column-fill: auto;
+  font-family: "Caveat", "Segoe Script", "Bradley Hand", cursive;
+  font-weight: 500;
+  font-size: 20.5px;
+  line-height: 24px;
+  color: var(--ink);
+  text-shadow: 0 0 .6px rgba(46,32,26,.6);
+}
+.flow p { margin: 0 0 8px; orphans: 2; widows: 2; overflow-wrap: break-word; }
+.measure { visibility: hidden; }
+
+.letter.revealed .page-text { animation: inkIn 1.2s ease both; }
 @keyframes inkIn {
-  from { opacity: 0; transform: translateY(4px); filter: blur(1.2px); }
-  to   { opacity: 1; transform: none; filter: blur(0); }
+  from { opacity: 0; filter: blur(1.4px); }
+  to   { opacity: 1; filter: blur(0); }
 }
 
-.page-footer { padding-top: 6px; text-align: center; color: #826b4d; font-size: 12px; }
-
-.page-controls {
+/* صفحه‌ی آخر */
+.closing {
+  position: absolute;
+  inset: 0;
+  padding: 0 30px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding-top: 8px;
-  margin-top: 5px;
-  border-top: 1px solid rgba(158,131,93,.4);
+  justify-content: center;
+  text-align: center;
 }
-.page-controls button {
-  border: 1px solid #9a805d;
-  background: rgba(227,208,172,.7);
-  color: #433126;
-  padding: 5px 11px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background .2s ease, transform .1s ease;
+.closing p { margin: 0; }
+.closing .closing-lead {
+  font-family: "Caveat", cursive;
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  margin: 0 0 10px;
 }
-.page-controls button:active:not(:disabled) { transform: translateY(1px); background: #d9c49b; }
-.page-controls button:disabled { opacity: .3; cursor: default; }
-.page-count { font-size: 12px; color: #80684a; white-space: nowrap; }
+.closing .closing-love {
+  font-family: "Marck Script", cursive;
+  font-size: calc(var(--lw) * .155);
+  line-height: 1.1;
+  color: #a3162a;
+  transform: rotate(-3deg);
+  text-shadow: 0 0 1px rgba(120,10,25,.7), 0 2px 8px rgba(150,20,35,.28);
+  margin: 6px 0 16px;
+}
+.closing .closing-yours {
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+  font-size: 26px;
+  color: #7d1424;
+}
+.closing .closing-name {
+  font-family: "Marck Script", cursive;
+  font-size: calc(var(--lw) * .115);
+  color: #a3162a;
+  transform: rotate(-2deg);
+  text-shadow: 0 0 1px rgba(120,10,25,.6), 0 2px 6px rgba(150,20,35,.22);
+}
+
+/* ورق خوردن: فقط transform عوض می‌شود (سبک و روان) */
+.turn-vis, .turn-back {
+  display: none;
+  position: absolute;
+  left: 0; top: -600px;
+  width: 1400px; height: 1200px;
+  overflow: hidden;
+  transform-origin: 0 600px;
+  pointer-events: none;
+}
+.turn-vis  { z-index: 3; }
+.turn-back { z-index: 5; }
+.turn-vis-frame, .turn-back-frame {
+  position: absolute;
+  left: 0; top: 600px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.turn-cast {
+  position: absolute;
+  left: 0; top: 0;
+  width: 56px; height: 100%;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(20,8,2,.34), rgba(20,8,2,0));
+}
+.turn-fold-shade {
+  position: absolute;
+  left: 0; top: 0;
+  width: 90px; height: 100%;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(60,30,10,.30), rgba(255,246,222,.14) 28%, rgba(255,246,222,0) 100%);
+}
+.flap-paper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27240%27%20height%3D%27240%27%3E%3Cfilter%20id%3D%27p%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.035%20.6%27%20numOctaves%3D%274%27%20seed%3D%273%27%20result%3D%27t%27%2F%3E%3CfeDiffuseLighting%20in%3D%27t%27%20lighting-color%3D%27%23fff%27%20surfaceScale%3D%271.4%27%20result%3D%27l%27%3E%3CfeDistantLight%20azimuth%3D%2750%27%20elevation%3D%2762%27%2F%3E%3C%2FfeDiffuseLighting%3E%3CfeComponentTransfer%20in%3D%27l%27%3E%3CfeFuncR%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3CfeFuncG%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3CfeFuncB%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23p%29%27%2F%3E%3C%2Fsvg%3E"), linear-gradient(125deg, #dccaa2, #d3be96);
+  background-blend-mode: multiply, normal;
+}
+.shade {
+  display: none;
+  position: absolute;
+  left: 0; top: -600px;
+  width: 80px; height: 1200px;
+  z-index: 2;
+  transform-origin: 0 600px;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(20,8,2,.42), rgba(20,8,2,0));
+}
+
+.page-footer {
+  position: absolute;
+  left: 0; right: 0; bottom: 13px;
+  z-index: 8;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #7a6246;
+  pointer-events: none;
+}
+
+/* لبه‌های سوخته‌ی کاغذ (تصویر آماده، بدون فیلتر زنده) */
+.burn {
+  position: absolute;
+  inset: -18px;
+  z-index: auto;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20386%20516%27%20preserveAspectRatio%3D%27none%27%3E%3Cdefs%3E%3Cfilter%20id%3D%27r%27%20x%3D%27-5%25%27%20y%3D%27-5%25%27%20width%3D%27110%25%27%20height%3D%27110%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.035%27%20numOctaves%3D%273%27%20seed%3D%2711%27%20result%3D%27t%27%2F%3E%3CfeDisplacementMap%20in%3D%27SourceGraphic%27%20in2%3D%27t%27%20scale%3D%2720%27%20xChannelSelector%3D%27R%27%20yChannelSelector%3D%27G%27%2F%3E%3C%2Ffilter%3E%3CradialGradient%20id%3D%27e%27%20cx%3D%27.5%27%20cy%3D%27.5%27%20r%3D%27.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23000%27%20stop-opacity%3D%270%27%2F%3E%3Cstop%20offset%3D%27.80%27%20stop-color%3D%27%23000%27%20stop-opacity%3D%270%27%2F%3E%3Cstop%20offset%3D%27.88%27%20stop-color%3D%27%235f2d10%27%20stop-opacity%3D%27.10%27%2F%3E%3Cstop%20offset%3D%27.95%27%20stop-color%3D%27%232a1106%27%20stop-opacity%3D%27.38%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23120703%27%20stop-opacity%3D%27.75%27%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%27c1%27%20gradientUnits%3D%27userSpaceOnUse%27%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2770%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%27.55%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%270%27%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%27c2%27%20gradientUnits%3D%27userSpaceOnUse%27%20cx%3D%27386%27%20cy%3D%270%27%20r%3D%2765%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%27.5%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%270%27%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%27c3%27%20gradientUnits%3D%27userSpaceOnUse%27%20cx%3D%270%27%20cy%3D%27516%27%20r%3D%2775%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%27.55%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%270%27%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%27c4%27%20gradientUnits%3D%27userSpaceOnUse%27%20cx%3D%27386%27%20cy%3D%27516%27%20r%3D%2770%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%27.55%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23160903%27%20stop-opacity%3D%270%27%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Cg%20filter%3D%27url%28%23r%29%27%3E%3Crect%20width%3D%27386%27%20height%3D%27516%27%20fill%3D%27url%28%23e%29%27%2F%3E%3Crect%20x%3D%270%27%20y%3D%270%27%20width%3D%2775%27%20height%3D%2775%27%20fill%3D%27url%28%23c1%29%27%2F%3E%3Crect%20x%3D%27321%27%20y%3D%270%27%20width%3D%2765%27%20height%3D%2765%27%20fill%3D%27url%28%23c2%29%27%2F%3E%3Crect%20x%3D%270%27%20y%3D%27441%27%20width%3D%2775%27%20height%3D%2775%27%20fill%3D%27url%28%23c3%29%27%2F%3E%3Crect%20x%3D%27316%27%20y%3D%27446%27%20width%3D%2770%27%20height%3D%2770%27%20fill%3D%27url%28%23c4%29%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 0 0 / 100% 100% no-repeat;
+}
 
 /* ───────── نورِ شمع روی سطح‌ها ───────── */
 
@@ -619,6 +716,111 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
 }
+
+/* ───────── نسخه‌ی نهایی: اندازه‌ها و بخش‌های جدید ───────── */
+.stage-fit { height: calc(560px * var(--fit)); }
+.stage { height: 560px; }
+
+.letter-slot { transform: translate(-50%, 15px) scale(.62, .375); will-change: auto; }
+.letter-sway { will-change: auto; }
+.letter { box-shadow: none; background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27240%27%20height%3D%27240%27%3E%3Cfilter%20id%3D%27p%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.035%20.6%27%20numOctaves%3D%274%27%20seed%3D%273%27%20result%3D%27t%27%2F%3E%3CfeDiffuseLighting%20in%3D%27t%27%20lighting-color%3D%27%23fff%27%20surfaceScale%3D%271.4%27%20result%3D%27l%27%3E%3CfeDistantLight%20azimuth%3D%2750%27%20elevation%3D%2762%27%2F%3E%3C%2FfeDiffuseLighting%3E%3CfeComponentTransfer%20in%3D%27l%27%3E%3CfeFuncR%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3CfeFuncG%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3CfeFuncB%20type%3D%27linear%27%20slope%3D%27.35%27%20intercept%3D%27.65%27%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23p%29%27%2F%3E%3C%2Fsvg%3E"),
+    radial-gradient(circle at 82% 88%, rgba(140,100,50,.20), transparent 38%),
+    radial-gradient(circle at 8% 92%, rgba(120,90,50,.13), transparent 34%),
+    radial-gradient(circle at 92% 6%, rgba(130,95,50,.12), transparent 30%),
+    radial-gradient(ellipse at 18% 12%, #f5e9cf, transparent 55%),
+    linear-gradient(125deg, #e9dbba, #e2d0a9 65%, #d3be96); background-blend-mode: multiply, normal, normal, normal, normal, normal; }
+.paper-tex { display: none; }
+.letter-content { padding: 0; display: block; }
+
+.paper-back       { top: calc(var(--env-top) - 23px); }
+.paper-back.two   { top: calc(var(--env-top) - 17px); }
+.paper-back.three { top: calc(var(--env-top) - 13px); }
+
+.back-inscription .secret { font-size: 26px; }
+.envelope.backview .back-view { cursor: pointer; }
+.env-sway.clickable { cursor: pointer; }
+.env-sway:focus-visible { outline: 2px solid #d9a679; outline-offset: 6px; }
+
+.swipe-hint, .end-hint {
+  color: #a98b80;
+  font-size: 15px;
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+.swipe-hint.show, .end-hint.show { opacity: 1; animation: breathe 2.8s ease-in-out 1.2s infinite; }
+
+/* دکمه‌ی موسیقی */
+.mute-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 80;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid #78404a;
+  background: rgba(30,12,16,.62);
+  color: #d9b6a8;
+  cursor: pointer;
+  opacity: .75;
+}
+.mute-btn[hidden] { display: none; }
+.mute-btn:hover { opacity: 1; }
+.mute-btn svg { width: 20px; height: 20px; }
+.mute-btn.off .wave { display: none; }
+
+/* قلب سوزان */
+.heart {
+  position: fixed;
+  left: 50%; top: 50%;
+  width: 200px;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.heart-svg { position: relative; display: block; width: 100%; height: auto; overflow: visible; }
+.heart-glow {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 340%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,140,60,.55), rgba(255,100,30,.22) 30%, rgba(255,80,20,0) 62%);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+#fx2 {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 70;
+  pointer-events: none;
+}
+
+.final-text {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 9vh;
+  z-index: 75;
+  padding: 0 20px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 3s ease;
+  pointer-events: none;
+}
+.final-text.show { opacity: 1; }
+.final-text h2 { margin: 0 0 8px; font-weight: 400; font-size: 30px; color: #e3c3a8; text-shadow: 0 0 18px rgba(255,130,60,.35); }
+.final-text p { margin: 0 auto; max-width: 280px; color: #b99a86; font-size: 16px; line-height: 1.7; }
 </style>
 </head>
 
@@ -640,6 +842,22 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       <stop offset=".45" stop-color="#8b2737"/>
       <stop offset="1" stop-color="#4b0e1b"/>
     </radialGradient>
+    <filter id="burnRough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="11" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="26" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="crumple" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="3" seed="4" result="n1"/>
+      <feDisplacementMap id="crumpleDisp" in="SourceGraphic" in2="n1" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="3" seed="9" result="n2"/>
+      <feDiffuseLighting in="n2" surfaceScale="5" lighting-color="#fff" result="lit">
+        <feDistantLight azimuth="235" elevation="55"/>
+      </feDiffuseLighting>
+      <feFlood flood-color="#fff" result="white"/>
+      <feComposite id="crumpleMix" in="lit" in2="white" operator="arithmetic" k1="0" k2="0" k3="1" k4="0" result="lp"/>
+      <feBlend in="d" in2="lp" mode="multiply" result="b"/>
+      <feComposite in="b" in2="d" operator="in"/>
+    </filter>
   </defs>
 </svg>
 
@@ -724,72 +942,15 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
             <div class="letter-sway" id="letterSway">
               <article class="letter" id="letter">
                 <div class="paper-tex"></div>
-                <div class="stains"></div>
+                <div class="burn"></div>
 
                 <div class="letter-content" id="letterContent">
                   <div class="pages" id="pages">
-
-                    <section class="page active">
-                      <h2>My Harley Quinn</h2>
-                      <p>
-                        Some letters are written to be read
-                        and some are written because silence
-                        has become too heavy to carry
-                      </p>
-                      <div class="page-divider"></div>
-                      <p>
-                        This one belongs to you
-                        and only you
-                      </p>
-                    </section>
-
-                    <section class="page">
-                      <h2>A little secret</h2>
-                      <p>
-                        There are things that ordinary words
-                        can never explain
-                      </p>
-                      <p>
-                        So I left a little of them here
-                        between the shadows and the ink
-                        where they can wait for you
-                      </p>
-                    </section>
-
-                    <section class="page">
-                      <h2>For you</h2>
-                      <p>
-                        You do not have to be strong
-                        every single moment
-                      </p>
-                      <div class="page-divider"></div>
-                      <p>
-                        Even the darkest nights eventually
-                        give way to morning
-                      </p>
-                    </section>
-
-                    <section class="page">
-                      <h2>The last page</h2>
-                      <p>
-                        Maybe the secret was never hidden
-                        in the letter itself
-                      </p>
-                      <p>
-                        Maybe it was always in the person
-                        for whom it was written
-                      </p>
-                    </section>
-
+                    <div class="shade" id="shUnder"></div>
+                    <div class="turn-vis" id="turnVis"><div class="turn-vis-frame" id="turnVisFrame"></div><div class="turn-cast"></div></div>
+                    <div class="turn-back" id="turnBack"><div class="turn-back-frame" id="turnBackFrame"><div class="flap-paper"><div class="burn"></div></div></div><div class="turn-fold-shade"></div></div>
                   </div>
-
-                  <div class="page-footer" id="pageNumber" aria-hidden="true">01</div>
-
-                  <div class="page-controls">
-                    <button id="prevBtn" type="button" disabled>Previous</button>
-                    <span class="page-count" id="pageCount" aria-live="polite">1 / 4</span>
-                    <button id="nextBtn" type="button">Next page</button>
-                  </div>
+                  <div class="page-footer" id="pageNumber" aria-live="polite">1 / 1</div>
                 </div>
 
                 <div class="sheen-wrap"><div class="sheen" data-gain="1"></div></div>
@@ -874,8 +1035,7 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
           <!-- پشت پاکت (پایان) -->
           <div class="back-view">
             <div class="back-inscription">
-              <span class="small">For the one who found it</span>
-              <span class="secret">Somewhere between<br>the ink and the silence</span>
+              <span class="secret">And so, you are the darkest sorceress of my life.</span>
               <span class="ornament">✦ &nbsp; ✦ &nbsp; ✦</span>
             </div>
             <div class="sheen-wrap"><div class="sheen" data-gain=".7"></div></div>
@@ -889,21 +1049,76 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
 
   <div class="foot-slot">
     <div class="seal-caption" id="sealCaption">Break the seal...</div>
+    <div class="swipe-hint" id="swipeHint">Swipe to turn the page ↗</div>
 
     <div class="return-area" id="returnArea">
       <p>The last page has been read</p>
       <button class="return-button" id="returnBtn" type="button">Return the letter</button>
     </div>
 
-    <section class="ending" id="ending">
-      <h2>Some secrets stay</h2>
-      <p>Not everything needs to be seen to be remembered</p>
-    </section>
+    <div class="end-hint" id="endHint">Touch the envelope one last time</div>
   </div>
 
 </main>
 
+<audio id="bgm" preload="auto" loop></audio>
+<button class="mute-btn" id="muteBtn" type="button" hidden aria-label="Mute or unmute the music">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".25"/>
+    <path class="wave" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/>
+  </svg>
+</button>
+
 <canvas id="fx" aria-hidden="true"></canvas>
+
+<div class="heart" id="heart" aria-hidden="true">
+  <div class="heart-glow" id="heartGlow"></div>
+  <svg class="heart-svg" viewBox="-6 -6 112 102">
+    <defs>
+      <radialGradient id="hotG" cx=".5" cy=".55" r=".6">
+        <stop offset="0" stop-color="#fff2b8"/>
+        <stop offset=".35" stop-color="#ffb23a"/>
+        <stop offset=".7" stop-color="#e2461c"/>
+        <stop offset="1" stop-color="#7a1208"/>
+      </radialGradient>
+      <radialGradient id="charG" cx=".5" cy=".5" r=".62">
+        <stop offset=".35" stop-color="#000" stop-opacity="0"/>
+        <stop offset=".85" stop-color="#050202" stop-opacity=".85"/>
+        <stop offset="1" stop-color="#000"/>
+      </radialGradient>
+      <linearGradient id="paperG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#85333f"/>
+        <stop offset=".6" stop-color="#5b1b2a"/>
+        <stop offset="1" stop-color="#3a111c"/>
+      </linearGradient>
+      <clipPath id="heartClip"><path d="M50 85C20 62 4 44 4 27C4 13 15 4 28 4C38 4 46 9 50 17C54 9 62 4 72 4C85 4 96 13 96 27C96 44 80 62 50 85Z"/></clipPath>
+      <filter id="heartPaper" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".05 .06" numOctaves="3" seed="4" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="d"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".09 .11" numOctaves="3" seed="9" result="n2"/>
+        <feDiffuseLighting in="n2" surfaceScale="3.2" lighting-color="#fff" result="lit">
+          <feDistantLight azimuth="235" elevation="52"/>
+        </feDiffuseLighting>
+        <feBlend in="d" in2="lit" mode="multiply" result="b"/>
+        <feComposite in="b" in2="d" operator="in"/>
+      </filter>
+    </defs>
+    <g filter="url(#heartPaper)">
+      <path d="M50 85C20 62 4 44 4 27C4 13 15 4 28 4C38 4 46 9 50 17C54 9 62 4 72 4C85 4 96 13 96 27C96 44 80 62 50 85Z" fill="url(#paperG)"/>
+    </g>
+    <g clip-path="url(#heartClip)">
+      <path id="heartChar" d="M50 85C20 62 4 44 4 27C4 13 15 4 28 4C38 4 46 9 50 17C54 9 62 4 72 4C85 4 96 13 96 27C96 44 80 62 50 85Z" fill="url(#charG)" opacity="0"/>
+      <path id="heartHot" d="M50 85C20 62 4 44 4 27C4 13 15 4 28 4C38 4 46 9 50 17C54 9 62 4 72 4C85 4 96 13 96 27C96 44 80 62 50 85Z" fill="url(#hotG)" opacity="0" style="mix-blend-mode:screen"/>
+    </g>
+  </svg>
+</div>
+
+<canvas id="fx2" aria-hidden="true"></canvas>
+
+<div class="final-text" id="finalText">
+  <h2>Some secrets stay</h2>
+  <p>Not everything needs to be seen to be remembered</p>
+</div>
 
 <script>
 (() => {
@@ -911,28 +1126,242 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
 
   const $ = (id) => document.getElementById(id);
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const smooth = (x) => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
 
+
+  /* ───────── موسیقی پس‌زمینه ─────────
+     فایل آهنگ کنار index.html باشد. اسمش را فقط همین‌جا عوض کن. */
+  const MUSIC_FILE = 'piano.mp3';
+  const MUSIC_VOLUME = 0.5;
+
+  const bgm = $('bgm'), muteBtn = $('muteBtn');
+  let musicOk = true, musicStarted = false;
+  bgm.src = MUSIC_FILE;
+  bgm.loop = true;
+  // اگر فایل پیدا نشد، سایت بدون صدا ادامه می‌دهد و دکمه‌ی صدا نشان داده نمی‌شود
+  bgm.addEventListener('error', () => { musicOk = false; if (!actx) muteBtn.hidden = true; });
+
+  function startMusic() {
+    if (musicStarted || !musicOk) return;
+    musicStarted = true;
+    bgm.volume = 0;
+    const fadeIn = () => {
+      muteBtn.hidden = false;
+      const f0 = performance.now();
+      (function fade(now) {
+        const k = Math.min(1, (now - f0) / 4000);
+        bgm.volume = MUSIC_VOLUME * k;
+        if (k < 1) requestAnimationFrame(fade);
+      })(f0);
+    };
+    const p = bgm.play();
+    if (p && p.then) p.then(fadeIn).catch(() => { musicStarted = false; });
+    else fadeIn();
+  }
+
+  // مرورگرها پخش خودکار را قبول نمی‌کنند؛ با اولین لمس شروع می‌شود
+  ['pointerdown', 'keydown'].forEach((ev) => document.addEventListener(ev, startMusic));
+
+  muteBtn.addEventListener('click', () => {
+    bgm.muted = !bgm.muted;
+    setSfxMuted(bgm.muted);
+    muteBtn.classList.toggle('off', bgm.muted);
+    muteBtn.setAttribute('aria-pressed', String(bgm.muted));
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!musicStarted || !musicOk) return;
+    if (document.hidden) bgm.pause();
+    else bgm.play().catch(() => {});
+  });
+
+
+  /* ───────── صدای ورق خوردن (با خود مرورگر ساخته می‌شود، فایل نمی‌خواهد) ───────── */
+  let actx = null, master = null, paperBuf = null, sfxMuted = false;
+
+  function makePaperBuffer() {
+    const len = Math.floor(actx.sampleRate * 1.2);
+    const buf = actx.createBuffer(1, len, actx.sampleRate);
+    const d = buf.getChannelData(0);
+    let env = 0;
+    for (let i = 0; i < len; i++) {
+      if (Math.random() < .0009) env = 1;     // خش‌خش‌های ریز کاغذ
+      env *= .9965;
+      d[i] = (Math.random() * 2 - 1) * (.25 + .75 * env);
+    }
+    return buf;
+  }
+
+  function ensureAudio() {
+    if (!actx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      try { actx = new AC(); } catch (err) { actx = null; return; }
+      master = actx.createGain();
+      master.gain.value = sfxMuted ? 0 : 1;
+      master.connect(actx.destination);
+      paperBuf = makePaperBuffer();
+      muteBtn.hidden = false;
+    }
+    if (actx.state === 'suspended') actx.resume().catch(() => {});
+  }
+  ['pointerdown', 'pointerup', 'keydown'].forEach((ev) => document.addEventListener(ev, ensureAudio));
+
+  function setSfxMuted(m) {
+    sfxMuted = m;
+    if (master) master.gain.value = m ? 0 : 1;
+  }
+
+  function paperSound(dur, vol, rate) {
+    if (!actx || !paperBuf || actx.state !== 'running') return;
+    const t = actx.currentTime;
+    const src = actx.createBufferSource();
+    src.buffer = paperBuf;
+    src.playbackRate.value = rate || 1;
+    const bp = actx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = .8;
+    bp.frequency.setValueAtTime(1800, t);
+    bp.frequency.exponentialRampToValueAtTime(4800, t + dur * .8);
+    const hp = actx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 700;
+    const g = actx.createGain();
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + dur * .18);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    src.connect(bp); bp.connect(hp); hp.connect(g); g.connect(master);
+    src.start(t, Math.random() * .3, dur + .05);
+  }
+
+  /* ───────── متن نامه ───────── */
+  const LETTER = [
+    "Writing has never been easy for me, but when it comes to you, the words seem to find their own way onto the page. It is as though even my pen can no longer bear the silence, as though it, too, wishes to scream that never in its lifetime has it witnessed a beauty quite like yours.",
+    "Do you remember what I used to call you?",
+    "My safe place.",
+    "To be safe means to be able to speak without fearing judgment. To say what is on my mind without putting every word on trial inside my head before allowing it to leave my lips.",
+    "To be happy or sad, angry or calm. Even to be lost in a storm of feelings I cannot quite understand myself.",
+    "It means I do not have to become a quieter, gentler, more perfect version of myself just to remain worthy of being loved.",
+    "It means knowing that even on the days when I have no smile to offer, when all that remains of me is a heavy silence and tired eyes, there will still be a place for me beside you.",
+    "When I laugh and when I cry. When the world inside me is bright, and when darkness has swallowed every corner of it.",
+    "To feel safe means knowing that there is still room for me in all of those moments.",
+    "Sometimes, I imagine myself as a stray cat abandoned on a cold street, with broken limbs and a soul that no longer trusts any hand that reaches for it.",
+    "A little creature that has learned to keep its distance from everything just to survive, one that bares its claws even when all it truly longs for is a gentle touch.",
+    "And then, I imagine you.",
+    "Like an angel who comes closer without being frightened by my wounds. Someone who carefully tends to my broken limbs, brings me food and water, and gives me the time I need to believe in kindness again.",
+    "You do not force me out of my darkness.",
+    "You simply sit beside me and treat me with such gentleness that, for a little while, I forget why I ever felt the need to run away from the world.",
+    "And perhaps that is the most beautiful part of it all.",
+    "You never try to turn my soul into something it was never meant to be. You simply allow the part of me that has grown weary of people to find a little peace beside you.",
+    "Perhaps there is a better way to put it.",
+    "You are like a great, ancient tree standing in the middle of a storm.",
+    "A tree that cannot stop the rain or silence every storm in the world, but spreads its branches above me so that I do not have to endure all that cold alone.",
+    "And I do not know if you understand just how precious a presence like yours can be.",
+    "But to someone who has grown accustomed to being alone, sometimes a single safe embrace is worth more than the entire world.",
+    "And now, I want to speak of you.",
+    "Of your eyes.",
+    "Those same eyes that have become the common thread running through every word, every poem, and every page I have ever written. The one subject to which not only my words, but my soul, my heart, and every part of my being keep returning.",
+    "Your eyes.",
+    "Sometimes, I imagine myself as the Titanic, sailing for years across endless waters, unaware that my fate would be decided not by the greatest of storms, but by a collision with a rock I had never expected to find.",
+    "And I was that Titanic.",
+    "And the light in your eyes was the hard, magnificent rock that brought my journey to a halt.",
+    "But who could possibly complain about a fate that unfolded so beautifully?",
+    "Sometimes, your eyes seem like the cruelest blizzard of the century, a storm so merciless that everything in its path turns to ice, leaving no living soul untouched.",
+    "And I am that frozen creature who, through the warmth of loving you, has somehow managed to witness the beauty of such magnificent destruction.",
+    "But no.",
+    "Perhaps it would be better to say that your eyes are an endless sky, and the light within them is the most beautiful aurora the world has ever seen.",
+    "And I am a frozen wanderer caught in the cruelest blizzard on earth, still unable to look away from the sky above me, no matter how bitter the cold becomes.",
+    "I wish I could be beside you and whisper all of this into your ear instead of writing it down.",
+    "I wish I could look into your eyes and see the expression on your face when you realize that every one of these words belongs to you.",
+    "But for now, all that lies between us is paper, ink, and a small, stubborn hope.",
+    "So I write.",
+    "Not merely so that you might read these words and understand what goes on inside my head, but so that my pen might finally find a little relief from the pain of all the things I have never known how to say.",
+    "I write so that my frozen hands might remember the warmth of your presence.",
+    "The same warmth that once reached my weary soul through your embrace, and the same kiss that turned the nightmare of my life, if only for a moment, into the most beautiful dream a child could ever have.",
+    "Perhaps a dream of swinging beneath an afternoon sky, without a single worry in the world.",
+    "Perhaps a dream of chocolate ice cream.",
+    "Those simple little dreams that people seem to forget they need once they grow up.",
+    "I wish we could be somewhere else right now.",
+    "Somewhere far away from all this distance, all these thoughts, and all this chaos.",
+    "Perhaps somewhere in England.",
+    "Perhaps on an old street in France.",
+    "Or somewhere in Italy or Spain.",
+    "Maybe we would be sitting atop cliffs that had stood against the wind and rain for millions of years, leaning against an ancient stone, staring out at the horizon.",
+    "We would sip our tea and herbal infusions slowly, with a bottle of your beloved strawberry vodka resting somewhere beside us.",
+    "And then, instead of behaving like two people in love and talking about our feelings, we would probably spend our time hitting each other repeatedly.",
+    "Blows made of hatred.",
+    "Yes.",
+    "As I have said before, sometimes I call the very depth of my love for you hatred.",
+    "Not the kind of hatred that destroys something, but that strange, almost unhinged feeling born from loving someone so much that ordinary words no longer seem capable of describing it.",
+    "And there we would sit beside the cliffs, talking about life and turning its pages one by one.",
+    "Perhaps we would laugh a little.",
+    "Perhaps we would speak of things no one else in the world knows about.",
+    "And I would probably be so drunk on you that even if I finished every last drop of that damned vodka, nothing would change.",
+    "Because some kinds of intoxication do not come from bottles.",
+    "They come from people who, without even realizing it, manage to occupy every corner of your mind.",
+    "And now, it is time to slowly bring this letter to an end, with a few more words about you.",
+    "In this haunted, untamed, and shadow-drenched forest, you are the devil whose presence makes even the darkness itself tremble.",
+    "A merciless sorceress who turns every other thought in my mind to stone, then walks away from the ruins without so much as a glance over her shoulder.",
+    "And yet, at the very same time, you are the most beautiful and perfect orchard one could ever imagine in a world this dark.",
+    "A garden enclosed by the tallest walls on earth, bearing fruits that might very well be poisonous.",
+    "And I, fully aware of the danger, remain hopelessly enchanted by those very fruits.",
+    "And now, one last thing for you.",
+    "There is something I want you to remember.",
+    "This world is full of shadows, chaos, and days that bring people to the very edge of themselves.",
+    "And even if you were the queen of all darkness, even if you were the most powerful sorceress in this forest, there would still be days when you grew tired.",
+    "Days when you no longer had the strength to fight.",
+    "Days when all you wanted was to put everything down and simply breathe for a while.",
+    "And I want you to know that such exhaustion takes nothing away from your worth.",
+    "So, every now and then, pour yourself a glass of peace.",
+    "Set down the heavy burden of this journey for a little while.",
+    "Look at the good things you still have in your life, and allow yourself to feel proud.",
+    "Not only of everything you have managed to overcome, but of the simple fact that, despite it all, you are still here.",
+    "Still trying.",
+    "Still moving forward.",
+    "Because I know how cruel this world can be.",
+    "And even so, I am proud of you.",
+    "Even on the days when you cannot find a single reason to be proud of yourself.",
+    "Even when you are tired.",
+    "Even when the world grows so dark that you begin to forget who you are.",
+    "I am still the same person who is proud of you.",
+    "The same person who sees you not only in your moments of light, but also in the darkest corners of your being."
+  ];
+
+  /* ───────── عناصر ───────── */
   const scene = $('scene'), envelope = $('envelope'), envSway = $('envSway');
-  const envShadow = $('envShadow');
+  const envShadow = $('envShadow'), envContact = document.querySelector('.env-contact');
   const flapWrap = $('flapWrap'), flapSway = $('flapSway'), flapShadow = $('flapShadow');
   const shadeOut = $('shadeOut'), shadeIn = $('shadeIn');
   const letterSlot = $('letterSlot'), letterShadow = $('letterShadow'), letterSway = $('letterSway');
   const letter = $('letter'), letterContent = $('letterContent'), creases = $('creases');
   const sealBtn = $('sealBtn'), residue = $('residue');
-  const prevBtn = $('prevBtn'), nextBtn = $('nextBtn');
-  const pageCount = $('pageCount'), pageNumber = $('pageNumber');
+  const pagesBox = $('pages'), pageNumber = $('pageNumber');
+  const turnVis = $('turnVis'), turnVisFrame = $('turnVisFrame'), turnBack = $('turnBack'), turnBackFrame = $('turnBackFrame'), shUnder = $('shUnder');
   const returnArea = $('returnArea'), returnBtn = $('returnBtn');
-  const pages = Array.from(document.querySelectorAll('.page'));
+  const swipeHint = $('swipeHint'), endHint = $('endHint');
+  const heart = $('heart'), heartHot = $('heartHot'), heartChar = $('heartChar'), heartGlow = $('heartGlow');
+  const finalText = $('finalText');
+  const crumpleDisp = $('crumpleDisp'), crumpleMix = $('crumpleMix');
   const sheens = Array.from(document.querySelectorAll('.sheen'));
   const gloss = document.querySelector('.gloss');
+  const paperBacks = Array.from(document.querySelectorAll('.paper-back'));
 
   /* ───────── اندازه‌ی صحنه روی صفحه‌های کوتاه ───────── */
   function fit() {
-    const f = Math.min(1, Math.max(.6, (window.innerHeight - 210) / 500));
+    const f = Math.min(1, Math.max(.6, (window.innerHeight - 190) / 560));
     document.documentElement.style.setProperty('--fit', f.toFixed(3));
   }
 
-  /* ───────── نور شمع (مدل ساده‌ی شعله) ───────── */
+  /* ───────── حالت‌ها ───────── */
+  let state = 'closed';   // closed → opening → reading → returning → finished → burning
+  let lift = 0, liftTarget = 0;
+  let flapSwayOn = true;
+  let shK = 1;            // محو شدن سایه‌ی پاکت موقع سوختن
+  let swayK = 1;          // موقع ورق زدن لرزش نامه کم می‌شود تا روان بماند
+  let curT = 0;
+
+  /* ───────── نور شمع ───────── */
   const light = { fl: 1, lx: 0, ly: 0 };
   let flTarget = 1, nextShift = 0;
 
@@ -940,7 +1369,7 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     if (t > nextShift) {
       flTarget = .86 + Math.random() * .2;
       nextShift = t + 60 + Math.random() * 320;
-      if (Math.random() < .04) flTarget = .72;        // گاهی یک تپش بلند
+      if (Math.random() < .04) flTarget = .72;
     }
     light.fl += (flTarget - light.fl) * Math.min(1, dt * 9);
     light.lx = (Math.sin(t * .0011) * .5 + Math.sin(t * .00277 + 1.7) * .35 + Math.sin(t * .0061 + .4) * .15) * .8
@@ -948,17 +1377,9 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     light.ly = Math.sin(t * .0014 + 2.1) * .5 + Math.sin(t * .0043) * .3;
   }
 
-  /* ───────── حالت‌ها ───────── */
-  let state = 'closed';            // closed → opening → reading → returning → finished
-  let lift = 0, liftTarget = 0;    // ارتفاع نامه از روی میز (برای سایه و لرزش)
-  let flapSwayOn = true;
-  let cur = 0, moving = false;
-
-  /* ───────── هر فریم: نور، سایه، لرزش ظریف ───────── */
   function applyLight(I, t, dt) {
     lift += (liftTarget - lift) * Math.min(1, dt * 3.2);
 
-    // روشنایی سطح‌ها (نور گرم شمع از بالا-چپ)
     const sx = light.lx * 16, sy = light.ly * 12;
     for (const s of sheens) {
       const g = parseFloat(s.dataset.gain) || 1;
@@ -968,9 +1389,9 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     gloss.style.transform = `translate(${(light.lx * 2.2).toFixed(2)}px,${(light.ly * 1.6).toFixed(2)}px)`;
     gloss.style.opacity = Math.min(1, I * .9).toFixed(3);
 
-    // سایه‌ها: جهتشان با تکان شعله کمی جابه‌جا می‌شود
     envShadow.style.transform = `translate(${(8 - light.lx * 3).toFixed(2)}px,${(13 - light.ly * 2).toFixed(2)}px) scale(.97)`;
-    envShadow.style.opacity = (.62 * Math.min(1, I)).toFixed(3);
+    envShadow.style.opacity = (.62 * Math.min(1, I) * shK).toFixed(3);
+    envContact.style.opacity = (.6 * shK).toFixed(3);
 
     const dx = 5 + 22 * lift - light.lx * 4;
     const dy = 6 + 34 * lift - light.ly * 3;
@@ -980,18 +1401,16 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     if (reduce) return;
     const s = t / 1000;
 
-    // پاکتِ روی میز: تقریباً ثابت
     envSway.style.transform =
       `rotate(${(Math.sin(s * .7) * .07).toFixed(3)}deg) translate3d(0,${(Math.sin(s * .6) * .25).toFixed(2)}px,0)`;
 
-    // در بسته: با گرمای شمع خیلی کم می‌لرزد
     if (flapSwayOn) {
       flapSway.style.transform =
         `rotateX(${(Math.sin(s * 1.3) * .5 + Math.sin(s * 3.1 + 1) * .25 + Math.sin(s * 19) * .04).toFixed(3)}deg)`;
     }
 
-    // نامه در هوا: نفس + لرزش دست
-    const a = lift;
+    swayK += (((turning || animT) ? 0 : 1) - swayK) * Math.min(1, dt * 8);
+    const a = lift * swayK;
     const rx = Math.sin(s * .9) * .9 * a + Math.sin(s * 2.3 + .5) * .25 * a;
     const ry = Math.sin(s * .7 + 1.2) * .9 * a + Math.sin(s * 1.9) * .22 * a;
     const rz = Math.sin(s * .55 + .4) * .35 * a;
@@ -1001,11 +1420,18 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       `rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg) rotate(${rz.toFixed(3)}deg) translate3d(${tx.toFixed(2)}px,${ty.toFixed(2)}px,0)`;
   }
 
-  /* ───────── بوم افکت‌ها ───────── */
-  const cv = $('fx');
-  const ctx = cv.getContext('2d');
-  const S = .6;
-  let W = 0, H = 0;
+  /* ───────── بوم‌ها: نور، دود، گرد و غبار، ذغال، آتش ───────── */
+  const cv = $('fx'), ctx = cv.getContext('2d');
+  const cv2 = $('fx2'), ctx2 = cv2.getContext('2d');
+  const S = .6, S2 = .75;
+  let W = 0, H = 0, W2 = 0, H2 = 0;
+
+  // وضعیت سوختن
+  const B = { on: false, ap: 0, cx: 0, cy: 0, size: 170 };
+  const baOf = () => curT - B.ap;
+  const btOf = () => baOf() - 500;
+  const fireK = (bt) => (bt < 0 ? 0 : smooth(bt / 2500) * (1 - .5 * smooth((bt - 7000) / 6000)));
+  const ashK = (bt) => (bt < 0 ? 0 : smooth(bt / 7500));
 
   function makeSprite(size, stops) {
     const c = document.createElement('canvas');
@@ -1018,7 +1444,7 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     return c;
   }
 
-  function makeSmokeSprite(size, seed) {
+  function makeSmokeSprite(size, seed, rgb, alpha) {
     const c = document.createElement('canvas');
     c.width = c.height = size;
     const g = c.getContext('2d');
@@ -1027,27 +1453,32 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     for (let i = 0; i < 9; i++) {
       const x = size * (.28 + .44 * rnd()), y = size * (.28 + .44 * rnd()), r = size * (.16 + .2 * rnd());
       const gr = g.createRadialGradient(x, y, 0, x, y, r);
-      gr.addColorStop(0, 'rgba(225,212,202,.55)');
-      gr.addColorStop(1, 'rgba(225,212,202,0)');
+      gr.addColorStop(0, `rgba(${rgb},${alpha})`);
+      gr.addColorStop(1, `rgba(${rgb},0)`);
       g.fillStyle = gr;
       g.fillRect(0, 0, size, size);
     }
     return c;
   }
 
-  const smokeSprites = [3, 14, 25].map((sd) => makeSmokeSprite(128, sd));
+  const smokeSprites = [3, 14, 25].map((sd) => makeSmokeSprite(128, sd, '225,212,202', .55));
+  const darkSprites  = [5, 17, 29].map((sd) => makeSmokeSprite(128, sd, '34,29,31', .75));
   const emberSprite = makeSprite(32, [[0, 'rgba(255,230,170,1)'], [.3, 'rgba(255,150,60,.7)'], [1, 'rgba(255,90,20,0)']]);
   const moteSprite  = makeSprite(24, [[0, 'rgba(255,235,200,1)'], [.4, 'rgba(255,210,150,.5)'], [1, 'rgba(255,190,120,0)']]);
+  const fireSprite  = makeSprite(64, [[0, 'rgba(255,246,196,1)'], [.25, 'rgba(255,192,72,.85)'], [.55, 'rgba(255,100,20,.45)'], [1, 'rgba(200,30,0,0)']]);
 
-  const smoke = [], embers = [];
+  const smoke = [], dsmoke = [], embers = [], coals = [], flames = [], sparks = [];
   let motes = [];
   let nextAmbient = 600, nextStream = 2200, streamEnd = 0, nextPuff = 0, streamX = 0, streamPh = 0, nextEmber = 4000;
+  let nextDs = 0, nextDs2 = 0;
 
   function resizeFx() {
     W = Math.ceil(window.innerWidth * S);
     H = Math.ceil(window.innerHeight * S);
-    cv.width = W;
-    cv.height = H;
+    cv.width = W; cv.height = H;
+    W2 = Math.ceil(window.innerWidth * S2);
+    H2 = Math.ceil(window.innerHeight * S2);
+    cv2.width = W2; cv2.height = H2;
     motes = Array.from({ length: 34 }, () => ({
       x: Math.random() * W, y: Math.random() * H,
       vx: (Math.random() - .5) * 4, vy: (Math.random() - .75) * 3.5,
@@ -1055,20 +1486,57 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     }));
   }
 
-  function newSmoke(x, ph, strong) {
-    const r0 = 12 + Math.random() * 10;
-    smoke.push({
-      x, y: H + r0, vx: 5 + Math.random() * 9, vy: -(30 + Math.random() * 20),
-      age: 0, life: 9 + Math.random() * 5, ph, r0, r1: r0 * (4.2 + Math.random() * 2.6),
-      a: (strong ? .11 : .07) * (.7 + Math.random() * .6),
-      s: smokeSprites[(Math.random() * 3) | 0],
+  function pushSmoke(arr, sprites, x, y, a, ph, rScale) {
+    const r0 = (12 + Math.random() * 10) * (rScale || 1);
+    arr.push({
+      x, y, vx: 5 + Math.random() * 9, vy: -(30 + Math.random() * 20),
+      age: 0, life: 9 + Math.random() * 5, ph, r0, r1: r0 * (4.2 + Math.random() * 2.6), a,
+      s: sprites[(Math.random() * 3) | 0],
       rot: Math.random() * 6.28, vr: (Math.random() - .5) * .25
     });
   }
 
+  function moveSmoke(arr, dt) {
+    for (let i = arr.length - 1; i >= 0; i--) {
+      const p = arr[i];
+      p.age += dt;
+      if (p.age >= p.life) { arr.splice(i, 1); continue; }
+      p.x += (p.vx + Math.sin(p.age * .9 + p.ph) * 13 + Math.sin(p.age * .37 + p.ph * 2) * 9) * dt;
+      p.y += p.vy * dt;
+      p.vx += 1.6 * dt;
+    }
+  }
+
+  function drawSmokeArr(arr, mult) {
+    for (const p of arr) {
+      const k = p.age / p.life;
+      const r = p.r0 + (p.r1 - p.r0) * Math.pow(k, .7);
+      ctx.globalAlpha = Math.min(1, p.a * Math.pow(Math.sin(Math.PI * k), 1.2) * mult);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot + p.vr * p.age);
+      ctx.drawImage(p.s, -r, -r, r * 2, r * 2);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // نقطه‌ی تصادفی داخل قلب (مختصات صفحه)
+  function heartPoint() {
+    const sz = B.size;
+    for (let i = 0; i < 10; i++) {
+      const u = (Math.random() * 2 - 1) * 1.15, v = Math.random() * 2.3 - 1.0;
+      const a = u * u + v * v - 1;
+      if (a * a * a - u * u * v * v * v <= 0) {
+        return [B.cx + (u / 1.139) * (sz / 2), B.cy - ((v - .13) / 1.1) * (sz * .45)];
+      }
+    }
+    return [B.cx, B.cy];
+  }
+
   function stepFx(t, dt) {
-    // دود: تکه‌های پراکنده + هر چند ثانیه یک رشته‌ی کشیده که از صحنه رد می‌شود
-    if (t > nextAmbient) { newSmoke(Math.random() * W * .8, Math.random() * 6.28, false); nextAmbient = t + 1100 + Math.random() * 1300; }
+    // دود روشن
+    if (t > nextAmbient) { pushSmoke(smoke, smokeSprites, Math.random() * W * .8, H + 20, .07 * (.7 + Math.random() * .6), Math.random() * 6.28); nextAmbient = t + 1100 + Math.random() * 1300; }
     if (t > nextStream) {
       streamX = W * (.05 + Math.random() * .55);
       streamPh = Math.random() * 6.28;
@@ -1077,19 +1545,12 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       nextStream = t + 8000 + Math.random() * 7000;
     }
     if (t < streamEnd && t > nextPuff) {
-      newSmoke(streamX + (Math.random() - .5) * 14, streamPh + Math.random() * .5, true);
+      pushSmoke(smoke, smokeSprites, streamX + (Math.random() - .5) * 14, H + 20, .11 * (.7 + Math.random() * .6), streamPh + Math.random() * .5);
       nextPuff = t + 90;
     }
-    for (let i = smoke.length - 1; i >= 0; i--) {
-      const p = smoke[i];
-      p.age += dt;
-      if (p.age >= p.life) { smoke.splice(i, 1); continue; }
-      p.x += (p.vx + Math.sin(p.age * .9 + p.ph) * 13 + Math.sin(p.age * .37 + p.ph * 2) * 9) * dt;
-      p.y += p.vy * dt;
-      p.vx += 1.6 * dt;
-    }
+    moveSmoke(smoke, dt);
 
-    // جرقه‌های ریز
+    // جرقه‌های ریز شمع
     if (t > nextEmber) {
       embers.push({ x: Math.random() * W * .7, y: H + 4, vx: (Math.random() - .3) * 10, vy: -(26 + Math.random() * 28),
                     age: 0, life: 4 + Math.random() * 3, ph: Math.random() * 6.28, sz: 2.5 + Math.random() * 3 });
@@ -1103,11 +1564,79 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       e.y += e.vy * dt;
     }
 
-    // گرد و غبار
     for (const m of motes) {
       m.x += m.vx * dt; m.y += m.vy * dt;
       if (m.x < -5) m.x = W + 5; else if (m.x > W + 5) m.x = -5;
       if (m.y < -5) m.y = H + 5; else if (m.y > H + 5) m.y = -5;
+    }
+
+    // سوختن: دود سیاه، دانه‌های ذغال، آتش
+    if (B.on) {
+      const bt = btOf(), A = ashK(bt);
+      if (bt > -300) {
+        if (t > nextDs) {
+          pushSmoke(dsmoke, darkSprites,
+            (B.cx + (Math.random() - .5) * B.size * .6) * S, (B.cy - B.size * .25) * S,
+            .26 + .1 * A, Math.random() * 6.28);
+          nextDs = t + Math.max(70, 330 - 260 * A) + Math.random() * 120;
+        }
+        if (t > nextDs2 && A > .03) {
+          pushSmoke(dsmoke, darkSprites, Math.random() * W, H + 20, .22 + .1 * A, Math.random() * 6.28, 1.3);
+          nextDs2 = t + Math.max(110, 520 - 400 * A) + Math.random() * 150;
+        }
+        const target = Math.round(240 * A);
+        let k = 0;
+        while (coals.length < target && k++ < 4) {
+          coals.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * 6, vy: 4 + Math.random() * 10,
+                       age: 0, life: 3 + Math.random() * 4, sz: .8 + Math.random() * 2.6, ph: Math.random() * 6.28 });
+        }
+      }
+      moveSmoke(dsmoke, dt);
+      for (let i = coals.length - 1; i >= 0; i--) {
+        const c = coals[i];
+        c.age += dt;
+        if (c.age >= c.life) { coals.splice(i, 1); continue; }
+        c.x += (c.vx + Math.sin(c.age * 1.3 + c.ph) * 6) * dt;
+        c.y += c.vy * dt;
+      }
+      stepFire(dt, bt);
+    }
+  }
+
+  function stepFire(dt, bt) {
+    const fk = fireK(bt);
+    if (fk > 0) {
+      const n = fk * 95 * dt;
+      let c = Math.floor(n);
+      if (Math.random() < n - c) c++;
+      for (let i = 0; i < c; i++) {
+        const p = heartPoint();
+        flames.push({ x: p[0], y: p[1], vx: (Math.random() - .5) * 26, vy: -(70 + Math.random() * 80),
+                      age: 0, life: .6 + Math.random() * .8, ph: Math.random() * 6.28, sz: 16 + Math.random() * 22 });
+      }
+      const n2 = fk * 7 * dt;
+      let c2 = Math.floor(n2);
+      if (Math.random() < n2 - c2) c2++;
+      for (let i = 0; i < c2; i++) {
+        const p = heartPoint();
+        sparks.push({ x: p[0], y: p[1], vx: (Math.random() - .5) * 60, vy: -(120 + Math.random() * 140),
+                      age: 0, life: 1 + Math.random() * 1.2, ph: Math.random() * 6.28, sz: 3 + Math.random() * 4 });
+      }
+    }
+    for (let i = flames.length - 1; i >= 0; i--) {
+      const f = flames[i];
+      f.age += dt;
+      if (f.age >= f.life) { flames.splice(i, 1); continue; }
+      f.x += (f.vx + Math.sin(f.age * 10 + f.ph) * 18) * dt;
+      f.y += f.vy * dt;
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.age += dt;
+      if (s.age >= s.life) { sparks.splice(i, 1); continue; }
+      s.x += (s.vx + Math.sin(s.age * 6 + s.ph) * 20) * dt;
+      s.y += s.vy * dt;
+      s.vy += 40 * dt;
     }
   }
 
@@ -1120,7 +1649,6 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     const ly = H * .14 + light.ly * H * .015;
     const R = Math.hypot(W, H);
 
-    // تاریکی گوشه‌ها (با تپش شعله کمی تغییر می‌کند)
     const vcx = W * .5 + (lx - W * .5) * .35, vcy = H * .45 + (ly - H * .45) * .2;
     let g = ctx.createRadialGradient(vcx, vcy, R * .12, vcx, vcy, R * .62);
     g.addColorStop(0, 'rgba(5,2,3,0)');
@@ -1130,7 +1658,6 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    // درخشش گرم شمع
     g = ctx.createRadialGradient(lx, ly, 0, lx, ly, R * .75);
     g.addColorStop(0, 'rgba(255,175,95,.22)');
     g.addColorStop(.35, 'rgba(255,145,65,.09)');
@@ -1140,21 +1667,30 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     ctx.fillRect(0, 0, W, H);
 
     if (withParticles) {
-      // دود
-      for (const p of smoke) {
-        const k = p.age / p.life;
-        const r = p.r0 + (p.r1 - p.r0) * Math.pow(k, .7);
-        ctx.globalAlpha = p.a * Math.pow(Math.sin(Math.PI * k), 1.2) * Math.min(1, igE * 1.2);
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot + p.vr * p.age);
-        ctx.drawImage(p.s, -r, -r, r * 2, r * 2);
-        ctx.restore();
+      drawSmokeArr(smoke, Math.min(1, igE * 1.2));
+
+      if (B.on) {
+        drawSmokeArr(dsmoke, 1);
+        // دانه‌های ذغال
+        const hx = B.cx * S, hy = B.cy * S;
+        for (const c of coals) {
+          const k = c.age / c.life;
+          const a = Math.sin(Math.PI * k) * .92;
+          const prox = Math.max(0, 1 - Math.hypot(c.x - hx, c.y - hy) / (R * .45));
+          if (prox > .02) {
+            ctx.globalAlpha = a * prox * .5;
+            ctx.fillStyle = 'rgb(255,130,50)';
+            ctx.beginPath(); ctx.arc(c.x, c.y, c.sz + .9, 0, 6.2832); ctx.fill();
+          }
+          ctx.globalAlpha = a;
+          ctx.fillStyle = 'rgb(10,6,6)';
+          ctx.beginPath(); ctx.arc(c.x, c.y, c.sz, 0, 6.2832); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
       }
 
       ctx.globalCompositeOperation = 'lighter';
 
-      // گرد و غبار (فقط نزدیک نور دیده می‌شود و سوسو می‌زند)
       for (const m of motes) {
         const d = Math.hypot(m.x - lx, m.y - ly) / R;
         const prox = Math.max(0, 1 - d * 1.5);
@@ -1166,7 +1702,6 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
         ctx.drawImage(moteSprite, m.x - sz / 2, m.y - sz / 2, sz, sz);
       }
 
-      // جرقه
       for (const e of embers) {
         const k = e.age / e.life;
         ctx.globalAlpha = Math.sin(Math.PI * k) * (.55 + .45 * Math.sin(e.age * 14 + e.ph)) * .85 * igE;
@@ -1176,7 +1711,24 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       ctx.globalCompositeOperation = 'source-over';
     }
 
-    // لحظه‌ی روشن شدن: از تاریکی کامل شروع می‌شود
+    // سیاه شدن همه‌جا (دور قلب کمی روشن می‌ماند)
+    if (B.on) {
+      const bt = btOf(), A = ashK(bt);
+      if (A > 0) {
+        const hx = B.cx * S, hy = B.cy * S;
+        const inner = B.size * S * (.9 + .5 * fireK(bt));
+        const outer = Math.hypot(W, H) * .9;
+        const og = ctx.createRadialGradient(hx, hy, inner, hx, hy, outer);
+        og.addColorStop(0, 'rgba(0,0,0,0)');
+        og.addColorStop(.35, `rgba(0,0,0,${(A * .85).toFixed(3)})`);
+        og.addColorStop(1, `rgba(0,0,0,${(A * .97).toFixed(3)})`);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = og;
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
+
+    // لحظه‌ی روشن شدن اول کار
     if (igE < 1) {
       ctx.globalAlpha = 1;
       ctx.fillStyle = `rgba(0,0,0,${(1 - igE).toFixed(3)})`;
@@ -1185,22 +1737,87 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     ctx.globalAlpha = 1;
   }
 
+  // آتش و جرقه (روی خود قلب)
+  function drawFire() {
+    ctx2.globalCompositeOperation = 'source-over';
+    ctx2.globalAlpha = 1;
+    ctx2.clearRect(0, 0, W2, H2);
+    if (!B.on) return;
+    const bt = btOf();
+    if (bt < 0) return;
+    const fk = fireK(bt);
+    if (fk <= .001) return;
+
+    ctx2.globalCompositeOperation = 'lighter';
+    const hx = B.cx * S2, hy = B.cy * S2, r = B.size * S2 * (1.5 + .25 * light.fl);
+    const g = ctx2.createRadialGradient(hx, hy, 0, hx, hy, r);
+    g.addColorStop(0, 'rgba(255,150,60,.34)');
+    g.addColorStop(.5, 'rgba(255,100,30,.12)');
+    g.addColorStop(1, 'rgba(255,80,20,0)');
+    ctx2.globalAlpha = fk * (.75 + .25 * light.fl);
+    ctx2.fillStyle = g;
+    ctx2.fillRect(0, 0, W2, H2);
+
+    for (const f of flames) {
+      const k = f.age / f.life;
+      const sz = f.sz * (1 - k * .7) * S2 * 2.2;
+      ctx2.globalAlpha = Math.min(1, fk * Math.pow(1 - k, 1.3) * .85);
+      ctx2.drawImage(fireSprite, f.x * S2 - sz / 2, f.y * S2 - sz / 2, sz, sz);
+    }
+    for (const s of sparks) {
+      const k = s.age / s.life;
+      const sz = s.sz * S2 * 2.4;
+      ctx2.globalAlpha = Math.sin(Math.PI * k) * (.6 + .4 * Math.sin(s.age * 18 + s.ph));
+      ctx2.drawImage(emberSprite, s.x * S2 - sz / 2, s.y * S2 - sz / 2, sz, sz);
+    }
+    ctx2.globalAlpha = 1;
+    ctx2.globalCompositeOperation = 'source-over';
+  }
+
+  function updateHeart() {
+    if (!B.on) return;
+    const ba = baOf();
+    const op = clamp(ba / 450, 0, 1);
+    heart.style.opacity = op.toFixed(3);
+    if (op <= 0) return;
+    const bt = Math.max(0, btOf());
+    const pop = ba < 450 ? .72 + .28 * smooth(ba / 450) : 1;
+    const beat = 1 + .022 * Math.sin(bt * .0062) + .01 * Math.sin(bt * .017);
+    heart.style.transform = `translate(-50%,-50%) scale(${(pop * beat).toFixed(4)})`;
+    const fl = light.fl;
+    heartHot.setAttribute('opacity', (Math.pow(clamp(bt / 3800, 0, 1), 1.2) * (.82 + .18 * fl) * .96).toFixed(3));
+    heartChar.setAttribute('opacity', (clamp((bt - 600) / 5000, 0, 1) * .7).toFixed(3));
+    heartGlow.style.opacity = (clamp(bt / 2500, 0, 1) * (.7 + .3 * fl)).toFixed(3);
+  }
+
   let t0 = null, last = 0, firstDrawn = false;
+
+  let acc = 0, frameN = 0;
 
   function frame(ts) {
     if (t0 === null) { t0 = ts; last = ts; }
     const dt = Math.min(.05, (ts - last) / 1000);
     last = ts;
     const t = ts - t0;
+    curT = t;
+    frameN++;
 
     updateLight(t, dt);
     const ig = Math.min(1, t / 3000);
     const igE = ig * ig * (3 - 2 * ig);
     const I = igE * light.fl;
 
-    stepFx(t, dt);
-    drawFx(t, I, igE, true);
+    // بوم سنگین‌ترین کار است: ۳۰ فریم در ثانیه، و موقع ورق زدن ۲۰ فریم
+    acc += dt;
+    const every = (turning || animT) ? 3 : 2;
+    if (!firstDrawn || frameN % every === 0) {
+      stepFx(t, acc);
+      drawFx(t, I, igE, true);
+      drawFire();
+      acc = 0;
+    }
     applyLight(I, t, dt);
+    updateHeart();
 
     if (!firstDrawn) {
       firstDrawn = true;
@@ -1213,7 +1830,9 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
   function staticFrame() {
     light.fl = 1; light.lx = 0; light.ly = 0;
     drawFx(0, 1, 1, false);
+    drawFire();
     applyLight(1, 0, 1);
+    updateHeart();
     cv.style.background = 'transparent';
     scene.classList.add('lit');
   }
@@ -1232,13 +1851,12 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     return a.finished.catch(() => {});
   }
 
-  const SEAL   = 'translateX(-50%) rotate(-5deg)';
-  const T_IN    = 'translate(-50%, 15px) scale(.6) rotate(0deg)';
-  const T_MID   = 'translate(-50%, -150px) scale(.7) rotate(-.8deg)';
-  const T_RAISE = 'translate(-50%, -248px) scale(.78) rotate(-1.5deg)';
-  const T_PULL  = 'translate(-50%, -285px) scale(1.04) rotate(.6deg)';
-  const T_OUT   = 'translate(-50%, -270px) scale(1) rotate(0deg)';
-  // خم شدنِ کاغذ موقع تا شدن / باز شدن
+  const SEAL    = 'translateX(-50%) rotate(-5deg)';
+  const T_IN    = 'translate(-50%, 15px) scale(.62,.375) rotate(0deg)';
+  const T_MID   = 'translate(-50%, -150px) scale(.7,.43) rotate(-.8deg)';
+  const T_RAISE = 'translate(-50%, -240px) scale(.78,.46) rotate(-1.5deg)';
+  const T_PULL  = 'translate(-50%, -205px) scale(1.03,1.02) rotate(.6deg)';
+  const T_OUT   = 'translate(-50%, -185px) scale(1,1) rotate(0deg)';
   const BEND = [
     { transform: 'perspective(700px) rotateX(0deg) scaleY(1)' },
     { transform: 'perspective(700px) rotateX(15deg) scaleY(.87)', offset: .5 },
@@ -1268,39 +1886,242 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     }
   }
 
-  /* ───────── صفحه‌ها ───────── */
-  function syncUI() {
-    const last = cur === pages.length - 1;
-    prevBtn.disabled = cur === 0;
-    nextBtn.disabled = last;
-    nextBtn.textContent = last ? 'Last page' : 'Next page';
-    pageCount.textContent = `${cur + 1} / ${pages.length}`;
-    pageNumber.textContent = String(cur + 1).padStart(2, '0');
-    returnArea.classList.toggle('show', last && state === 'reading');
+  /* ───────── صفحه‌بندی خودکار (ستون‌های CSS) ───────── */
+  const PAD = { l: 34, r: 34, t: 38, b: 40 };
+  let pageEls = [], N = 0, cur = 0, builtW = 0;
+  let pagesReady = Promise.resolve();
+
+  function closingPage() {
+    const pg = document.createElement('section');
+    pg.className = 'page';
+    pg.innerHTML =
+      '<div class="closing">' +
+      '<p class="closing-lead">And still, with everything I have,</p>' +
+      '<p class="closing-love">I love you.</p>' +
+      '<p class="closing-yours">Yours,</p>' +
+      '<p class="closing-name">The Joker</p>' +
+      '</div>' +
+      '<div class="burn"></div>';
+    return pg;
   }
 
-  function go(dir) {
-    if (moving || state !== 'reading') return;
-    const n = cur + dir;
-    if (n < 0 || n >= pages.length) return;
-    moving = true;
+  function buildPages() {
+    pagesBox.querySelectorAll('.page, .measure').forEach((n) => n.remove());
+    const w = letterSlot.offsetWidth, h = letterSlot.offsetHeight;
+    builtW = w;
+    const colW = w - PAD.l - PAD.r;
+    const colH = h - PAD.t - PAD.b;
+    const gap = 48;
 
-    const o = pages[cur], nw = pages[n];
-    nw.style.transition = 'none';
-    nw.style.setProperty('--in', (dir * 30) + 'px');
-    void nw.offsetWidth;
-    nw.style.transition = '';
-    o.style.setProperty('--out', (-dir * 30) + 'px');
+    const src = document.createElement('div');
+    src.className = 'flow measure';
+    src.style.cssText = `width:${colW}px;height:${colH}px;column-width:${colW}px;column-gap:${gap}px;`;
+    LETTER.forEach((t) => {
+      const p = document.createElement('p');
+      p.textContent = t;
+      src.appendChild(p);
+    });
+    pagesBox.appendChild(src);
 
-    o.classList.remove('active');
-    o.classList.add('out');
-    nw.classList.add('active');
-    nw.scrollTop = 0;
-    cur = n;
+    let n = Math.round((src.scrollWidth + gap) / (colW + gap));
+    if (!(n >= 1)) n = 1;
+    if (n === 1 && src.lastElementChild && src.lastElementChild.offsetLeft > colW) {
+      n = Math.floor(src.lastElementChild.offsetLeft / (colW + gap)) + 1;
+    }
+    src.remove();
+
+    pageEls = [];
+    for (let i = 0; i < n; i++) {
+      const pg = document.createElement('section');
+      pg.className = 'page';
+      const box = document.createElement('div');
+      box.className = 'page-text';
+      box.style.cssText = `left:${PAD.l}px;top:${PAD.t}px;width:${colW}px;height:${colH}px;`;
+      const fl = src.cloneNode(true);
+      fl.classList.remove('measure');
+      fl.style.left = (-i * (colW + gap)) + 'px';
+      box.appendChild(fl);
+      pg.appendChild(box);
+      const bn = document.createElement('div');
+      bn.className = 'burn';
+      pg.appendChild(bn);
+      pagesBox.appendChild(pg);
+      pageEls.push(pg);
+    }
+    const cp = closingPage();
+    pagesBox.appendChild(cp);
+    pageEls.push(cp);
+
+    N = pageEls.length;
+    cur = Math.min(cur, N - 1);
+    showOnly(cur);
     syncUI();
-
-    setTimeout(() => { o.classList.remove('out'); moving = false; }, reduce ? 0 : 460);
   }
+
+  function showOnly(i) {
+    pageEls.forEach((p, idx) => {
+      p.style.display = idx === i ? 'block' : 'none';
+      p.style.zIndex = '';
+    });
+    turnVis.style.display = 'none';
+    turnBack.style.display = 'none';
+    shUnder.style.display = 'none';
+  }
+
+  function syncUI() {
+    pageNumber.textContent = `${cur + 1} / ${Math.max(1, N)}`;
+    returnArea.classList.toggle('show', N > 0 && cur === N - 1 && state === 'reading');
+  }
+
+  /* ───────── ورق خوردن (از گوشه‌ی پایین‌چپ به بالاراست) ─────────
+     هر فریم فقط چند transform عوض می‌شود؛ هیچ clip-path یا فیلتر زنده‌ای نیست. */
+  let G = null, turning = null, animT = 0, drag = null, hintHidden = false;
+  let dragSc = 1, pendingS = null, dragRaf = 0;
+
+  function geom() {
+    const w = pagesBox.clientWidth, h = pagesBox.clientHeight;
+    const diag = Math.hypot(w, h);
+    const dx = w / diag, dy = -h / diag;
+    G = { w, h, diag, dx, dy, phi: Math.atan2(dy, dx) };
+  }
+
+  function renderTurn(s) {
+    const { h, diag, dx, dy, phi } = G;
+    s = clamp(s, .01, diag);
+    const full = s >= diag - .5;
+    const d = full ? 'none' : 'block';
+    turnVis.style.display = d;
+    turnBack.style.display = d;
+    shUnder.style.display = d;
+    if (full) return;
+
+    const Mx = s * dx, My = h + s * dy;
+    const tf = `translate(${Mx.toFixed(2)}px,${My.toFixed(2)}px) rotate(${phi.toFixed(5)}rad)`;
+    const inv = `rotate(${(-phi).toFixed(5)}rad) translate(${(-Mx).toFixed(2)}px,${(-My).toFixed(2)}px)`;
+    turnVis.style.transform = tf;
+    turnBack.style.transform = tf;
+    turnVisFrame.style.transform = inv;
+    turnBackFrame.style.transform = 'scale(-1,1) ' + inv;
+    shUnder.style.transform = `translate(${Mx.toFixed(2)}px,${My.toFixed(2)}px) rotate(${(phi + Math.PI).toFixed(5)}rad)`;
+  }
+
+  function beginTurn(dir) {
+    geom();
+    const el = dir > 0 ? pageEls[cur] : pageEls[cur - 1];
+    const under = dir > 0 ? pageEls[cur + 1] : pageEls[cur];
+    turning = { dir, el, under, s: dir > 0 ? .01 : G.diag };
+    turnVisFrame.style.width = turnBackFrame.style.width = G.w + 'px';
+    turnVisFrame.style.height = turnBackFrame.style.height = G.h + 'px';
+    el.classList.add('turning');
+    under.classList.add('turning');
+    under.style.display = 'block';
+    under.style.zIndex = '1';
+    el.style.display = 'block';
+    turnVisFrame.appendChild(el);
+    renderTurn(turning.s);
+    paperSound(.6, .35, 1);
+  }
+
+  function endTurn(complete) {
+    const t = turning;
+    turning = null;
+    pendingS = null;
+    turnVis.style.display = 'none';
+    turnBack.style.display = 'none';
+    shUnder.style.display = 'none';
+    pagesBox.appendChild(t.el);
+    t.el.classList.remove('turning');
+    t.under.classList.remove('turning');
+    t.el.style.zIndex = '';
+    t.under.style.zIndex = '';
+    if (complete) { cur += t.dir; paperSound(.28, .2, 1.4); }
+    showOnly(cur);
+    syncUI();
+    if (complete && !hintHidden) { hintHidden = true; swipeHint.classList.remove('show'); }
+  }
+
+  function tweenS(from, to, ms, done) {
+    const t0 = performance.now();
+    const dur = reduce ? 1 : ms;
+    function step(now) {
+      const k = Math.min(1, (now - t0) / dur);
+      const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      turning.s = from + (to - from) * e;
+      renderTurn(turning.s);
+      if (k < 1) animT = requestAnimationFrame(step);
+      else { animT = 0; if (done) done(); }
+    }
+    animT = requestAnimationFrame(step);
+  }
+
+  function autoTurn(dir) {
+    if (state !== 'reading' || turning || animT) return;
+    if ((dir > 0 && cur >= N - 1) || (dir < 0 && cur <= 0)) return;
+    beginTurn(dir);
+    tweenS(turning.s, dir > 0 ? G.diag : 0, 850, () => endTurn(true));
+  }
+
+  const GAIN = 1.9;
+
+  pagesBox.addEventListener('pointerdown', (e) => {
+    if (state !== 'reading' || turning || animT) return;
+    geom();
+    dragSc = (letter.getBoundingClientRect().width / pagesBox.clientWidth) || 1;
+    drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, active: false, dir: 0, lastProj: 0, lastT: performance.now(), v: 0 };
+    try { pagesBox.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+  });
+
+  pagesBox.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const px = (e.clientX - drag.x0) / dragSc, py = (e.clientY - drag.y0) / dragSc;
+    const proj = px * G.dx + py * G.dy;
+
+    if (!drag.active) {
+      if (Math.abs(proj) < 8) return;
+      const dir = proj > 0 ? 1 : -1;
+      if ((dir > 0 && cur >= N - 1) || (dir < 0 && cur <= 0)) return;
+      drag.active = true;
+      drag.dir = dir;
+      beginTurn(dir);
+    }
+
+    const now = performance.now();
+    const dtm = Math.max(1, now - drag.lastT);
+    drag.v = drag.v * .6 + ((proj - drag.lastProj) / dtm) * .4;
+    drag.lastProj = proj; drag.lastT = now;
+
+    pendingS = clamp(drag.dir > 0 ? proj * GAIN : G.diag + proj * GAIN, 0, G.diag);
+    if (!dragRaf) {
+      dragRaf = requestAnimationFrame(() => {
+        dragRaf = 0;
+        if (turning && pendingS !== null) { turning.s = pendingS; renderTurn(turning.s); }
+      });
+    }
+  });
+
+  function releaseDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag;
+    drag = null;
+    try { pagesBox.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    if (dragRaf) { cancelAnimationFrame(dragRaf); dragRaf = 0; }
+    if (!d.active || !turning) return;
+    if (pendingS !== null) turning.s = pendingS;
+
+    const flick = d.v * d.dir > .6;
+    let complete, target;
+    if (d.dir > 0) {
+      complete = flick || turning.s > G.diag * .25;
+      target = complete ? G.diag : 0;
+    } else {
+      complete = flick || turning.s < G.diag * .75;
+      target = complete ? 0 : G.diag;
+    }
+    const dist = Math.abs(target - turning.s) / G.diag;
+    tweenS(turning.s, target, 160 + 420 * dist, () => endTurn(complete));
+  }
+  pagesBox.addEventListener('pointerup', releaseDrag);
+  pagesBox.addEventListener('pointercancel', releaseDrag);
 
   /* ───────── باز کردن نامه ───────── */
   async function openLetter() {
@@ -1309,7 +2130,6 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
     sealBtn.disabled = true;
     scene.classList.add('opened');
 
-    // ۱) مهر فشرده می‌شود، ترک می‌خورد و می‌افتد
     later(300, () => {
       crumbs();
       play(residue, [{ opacity: 0 }, { opacity: 1 }], 200);
@@ -1324,7 +2144,6 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       { transform: 'translateX(-50%) translateY(34px) rotate(26deg) scale(.82)', opacity: 0, offset: 1 }
     ], 700, 'linear');
 
-    // ۲) در پاکت باز می‌شود (وسط چرخش پشت نامه می‌رود)
     flapSwayOn = false;
     flapSway.style.transform = 'none';
     later(420, () => envelope.classList.add('flap-open'));
@@ -1337,7 +2156,6 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       { transform: 'rotateX(180deg)' }
     ], 1150, 'cubic-bezier(.55,.05,.3,1)');
 
-    // ۳) نامه از داخل پاکت بالا می‌آید
     await sleep(800);
     liftTarget = .45;
     await play(letterSlot, [
@@ -1346,8 +2164,8 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       { transform: T_RAISE }
     ], 1250, 'cubic-bezier(.35,.55,.3,1)');
     await flapP;
+    await pagesReady;
 
-    // ۴) جلو می‌آید، باز می‌شود و روی پاکت می‌ایستد
     envelope.classList.add('letter-out');
     liftTarget = 1;
     play(creases, [{ opacity: 1 }, { opacity: 0 }], 1000, 'ease', 250);
@@ -1365,27 +2183,29 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
 
     state = 'reading';
     syncUI();
+    if (!hintHidden) swipeHint.classList.add('show');
   }
 
-  /* ───────── برگرداندن نامه به پاکت ───────── */
+  /* ───────── برگرداندن نامه به پاکت (تا می‌شود، می‌رود تو) ───────── */
   async function returnLetter() {
-    if (state !== 'reading') return;
+    if (state !== 'reading' || turning || animT) return;
     state = 'returning';
     returnArea.classList.remove('show');
+    swipeHint.classList.remove('show');
 
-    // اول تا می‌شود (عکسِ باز شدن)، بعد بالا می‌رود
+    // ۱) تا می‌شود
     play(letterContent, [{ opacity: 1 }, { opacity: 0 }], 600);
     play(creases, [{ opacity: 0 }, { opacity: 1 }], 800, 'ease', 100);
     await play(letter, BEND, 950, 'ease-in-out');
+
+    // ۲) بالا می‌رود، بعد پشت جلوی پاکت می‌لغزد
     liftTarget = .45;
     await play(letterSlot, [{ transform: T_OUT }, { transform: T_RAISE }], 1100, 'cubic-bezier(.4,0,.2,1)');
-
-    // پشت جلوی پاکت می‌رود و داخل می‌لغزد
     envelope.classList.remove('letter-out');
     await play(letterSlot, [{ transform: T_RAISE }, { transform: T_IN }], 1200, 'cubic-bezier(.4,0,.3,1)');
     liftTarget = 0;
 
-    // در پاکت بسته می‌شود
+    // ۳) در بسته می‌شود (مهر یک بار شکسته؛ دوباره مهر نمی‌شود)
     later(420, () => envelope.classList.remove('flap-open'));
     play(flapShadow, [{ opacity: 0 }, { opacity: 1 }], 500, 'ease', 500);
     play(shadeIn, [{ opacity: 0 }, { opacity: .65 }], 480, 'ease-in');
@@ -1396,41 +2216,125 @@ button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
       { transform: 'rotateX(0deg)' }
     ], 1000, 'cubic-bezier(.5,0,.3,1)');
     flapSwayOn = true;
-
-    // مهر یک بار شکسته؛ دیگر مهر نمی‌شود، فقط پاکت برمی‌گردد
     await sleep(600);
 
-    // پاکت برگردانده می‌شود
+    // ۴) پاکت برمی‌گردد
     await play(envelope, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(90deg)' }], 520, 'ease-in');
     envelope.classList.add('backview');
     await play(envelope, [{ transform: 'rotateY(-90deg)' }, { transform: 'rotateY(0deg)' }], 640, 'ease-out');
 
     state = 'finished';
     scene.classList.add('finished');
+    envSway.classList.add('clickable');
+    envSway.setAttribute('tabindex', '0');
+    envSway.setAttribute('role', 'button');
+    envSway.setAttribute('aria-label', 'Touch the envelope one last time');
+    later(700, () => endHint.classList.add('show'));
+  }
+
+  /* ───────── آخرین کلیک: مچاله می‌شود، قلب می‌شود، می‌سوزد ───────── */
+  function crumple(ms) {
+    envSway.style.filter = 'url(#crumple)';
+    const t0 = performance.now();
+    (function step(now) {
+      const k = Math.min(1, (now - t0) / ms);
+      const e = k * k * (3 - 2 * k);
+      crumpleDisp.setAttribute('scale', (e * 46).toFixed(1));
+      crumpleMix.setAttribute('k2', e.toFixed(3));
+      crumpleMix.setAttribute('k3', (1 - e).toFixed(3));
+      shK = 1 - e;
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  async function burnIt() {
+    if (state !== 'finished') return;
+    state = 'burning';
+    endHint.classList.remove('show');
+    envSway.classList.remove('clickable');
+    document.body.style.overflow = 'hidden';
+
+    const r = envelope.getBoundingClientRect();
+    B.cx = r.left + r.width / 2;
+    B.cy = r.top + r.height / 2;
+    B.size = Math.min(190, window.innerWidth * .5);
+    heart.style.left = B.cx + 'px';
+    heart.style.top = B.cy + 'px';
+    heart.style.width = (B.size * 1.217) + 'px';
+
+    if (reduce) {
+      B.ap = -30000;
+      B.on = true;
+      shK = 0;
+      envSway.style.opacity = '0';
+      paperBacks.forEach((p) => { p.style.opacity = '0'; });
+      finalText.classList.add('show');
+      staticFrame();
+      return;
+    }
+
+    B.ap = curT + 1100;
+    B.on = true;
+
+    crumple(1500);
+    play(envelope, [
+      { transform: 'scale(1) rotate(0deg)' },
+      { transform: 'scale(.93) rotate(-2deg)', offset: .18 },
+      { transform: 'scale(.8) rotate(3deg)', offset: .45 },
+      { transform: 'scale(.64) rotate(-5deg)', offset: .7 },
+      { transform: 'scale(.52) rotate(0deg)' }
+    ], 1500, 'ease-in-out');
+    play(envSway, [{ opacity: 1 }, { opacity: 0 }], 450, 'ease-in', 1150);
+    paperBacks.forEach((p) => play(p, [{ opacity: 1 }, { opacity: 0 }], 1600, 'ease', 800));
+
+    later(1100 + 500 + 8500, () => finalText.classList.add('show'));
   }
 
   /* ───────── رویدادها ───────── */
   sealBtn.addEventListener('click', openLetter);
-  prevBtn.addEventListener('click', () => go(-1));
-  nextBtn.addEventListener('click', () => go(1));
   returnBtn.addEventListener('click', returnLetter);
+  envSway.addEventListener('click', () => { if (state === 'finished') burnIt(); });
 
   document.addEventListener('keydown', (e) => {
-    if (state !== 'reading') return;
-    if (e.key === 'ArrowRight') go(1);
-    else if (e.key === 'ArrowLeft') go(-1);
+    if (state === 'reading') {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') autoTurn(1);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') autoTurn(-1);
+    } else if (state === 'finished' && (e.key === 'Enter' || e.key === ' ') && document.activeElement === envSway) {
+      e.preventDefault();
+      burnIt();
+    }
   });
 
-  window.addEventListener('resize', () => { fit(); resizeFx(); if (reduce) staticFrame(); });
+  let rsT = 0;
+  window.addEventListener('resize', () => {
+    fit();
+    resizeFx();
+    if (reduce) staticFrame();
+    clearTimeout(rsT);
+    rsT = setTimeout(() => {
+      if (!turning && letterSlot.offsetWidth !== builtW && pageEls.length) buildPages();
+    }, 250);
+  });
 
   /* ───────── شروع ───────── */
   fit();
   resizeFx();
-  syncUI();
+
+  const fontsReady = (document.fonts && document.fonts.load)
+    ? Promise.race([
+        Promise.all([
+          document.fonts.load('500 20px Caveat'),
+          document.fonts.load('400 20px "Marck Script"')
+        ]).then(() => document.fonts.ready),
+        new Promise((r) => setTimeout(r, 3500))
+      ]).catch(() => {})
+    : Promise.resolve();
+  pagesReady = fontsReady.then(() => { buildPages(); });
 
   if (reduce) staticFrame();
   else requestAnimationFrame(frame);
 })();
+
 </script>
 
 </body>
