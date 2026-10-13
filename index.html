@@ -2,20 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#100b0b">
-<title>For Harley Quinn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17110f">
+<title>A Letter from the Shadows</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Marck+Script&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --wine: #48101e;
-  --wine-dark: #260811;
-  --gold: #b49a71;
-  --ink: #332116;
+  --night: #17110f;
+  --burgundy: #521923;
+  --burgundy-dark: #301016;
+  --paper: #e8d7b2;
+  --ink: #28201b;
+  --gold: #ad8b5b;
 }
 
 * {
@@ -23,520 +25,535 @@
 }
 
 html {
-  min-height: 100%;
-  background: #100b0b;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  min-height: 100svh;
-  padding: 28px 18px 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: hidden;
-  color: #d9c5a6;
+  color: #e8dcc8;
+  font-family: "Cormorant Garamond", serif;
   background:
-    radial-gradient(ellipse at 50% 44%,
-      rgba(135, 76, 42, .22),
-      transparent 42%),
-    radial-gradient(ellipse at 50% 100%,
-      #241612,
-      #100b0b 70%);
-  font-family: "IM Fell English", Georgia, serif;
+    radial-gradient(ellipse at 50% 42%, #38221e 0%, #211715 43%, #100d0c 100%);
+  overflow-x: hidden;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 50% 45%,
-      transparent 20%,
-      rgba(0,0,0,.23) 68%,
-      rgba(0,0,0,.76) 120%);
+button {
+  font: inherit;
 }
 
 .scene {
-  width: 100%;
-  max-width: 440px;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px 16px 30px;
   position: relative;
-  z-index: 1;
+  isolation: isolate;
+  transition: background 1.2s ease;
+}
+
+.scene::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .15;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
+  z-index: -1;
 }
 
 .intro {
   text-align: center;
   margin-bottom: 34px;
-  opacity: 0;
-  animation: fadeIn 2.5s ease forwards;
-  animation-delay: .5s;
+  transition: opacity .8s ease, transform .8s ease;
 }
 
 .intro h1 {
-  margin: 0;
-  color: #dfc6a0;
-  font-family: "Caveat", cursive;
-  font-size: clamp(35px, 9vw, 46px);
+  font-size: clamp(27px, 6vw, 42px);
   font-weight: 500;
-  letter-spacing: .5px;
-  text-shadow: 0 0 25px rgba(192, 123, 69, .2);
+  letter-spacing: 1.5px;
+  margin: 0 0 8px;
+  color: #dfc8a5;
 }
 
 .intro p {
-  margin: 5px 0 0;
-  color: #9b8061;
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: 13px;
+  letter-spacing: 4px;
   text-transform: uppercase;
+  margin: 0;
+  color: #9d8270;
 }
-
-/* THE ENVELOPE SCENE */
 
 .envelope-area {
-  width: 100%;
-  aspect-ratio: 1.25 / 1;
   position: relative;
-  perspective: 1200px;
-  transform: rotate(-2deg);
-  filter: drop-shadow(0 24px 24px rgba(0,0,0,.55));
-  animation: revealScene 2.5s ease both;
+  width: min(88vw, 370px);
+  height: 390px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  perspective: 1000px;
+  transition: transform 1.2s ease;
 }
 
-/* OLD PAPER SHEETS BEHIND THE ENVELOPE */
+/* کاغذهای قدیمی پشت پاکت */
 
 .paper-back {
   position: absolute;
-  background-color: #b99a6c;
-  background-image:
-    radial-gradient(ellipse at 12% 15%,
-      rgba(255,237,192,.45), transparent 36%),
-    radial-gradient(ellipse at 88% 85%,
-      rgba(83,48,25,.24), transparent 42%),
-    repeating-linear-gradient(3deg,
-      transparent 0 3px,
-      rgba(78,48,24,.045) 4px,
-      transparent 5px 8px),
-    linear-gradient(125deg,#ddc69a,#b99a6c 65%,#8f7049);
-  border: 1px solid rgba(72,44,22,.55);
-  box-shadow:
-    inset 0 0 18px rgba(66,39,18,.18),
-    0 4px 7px rgba(0,0,0,.35);
+  width: 83%;
+  height: 220px;
+  bottom: 43px;
+  left: 50%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at 12% 20%, #fff4d8 0%, transparent 40%),
+    linear-gradient(125deg, #e5d5b2, #cbb58b 70%, #e0cda8);
+  box-shadow: 0 9px 25px #0008;
+  border: 1px solid #a9946e;
 }
 
 .paper-back.one {
-  inset: -13px 17px 17px -9px;
-  transform: rotate(-5deg);
+  transform: translateX(-50%) rotate(-7deg);
+  bottom: 48px;
 }
 
 .paper-back.two {
-  inset: -7px -10px 10px 12px;
-  transform: rotate(3.5deg);
-  background-color: #c6ad81;
-  background-image:
-    radial-gradient(ellipse at 80% 10%,
-      rgba(255,240,205,.4), transparent 35%),
-    repeating-linear-gradient(0deg,
-      transparent 0 4px,
-      rgba(70,42,22,.05) 5px,
-      transparent 6px 9px),
-    linear-gradient(145deg,#d5bd90,#b49a70 80%,#9d8057);
+  transform: translateX(-50%) rotate(5deg);
+  bottom: 44px;
+  width: 85%;
 }
 
-/* THE LETTER STARTS BEHIND THE ENVELOPE */
+/* خود نامه؛ اندازه در تمام مراحل ثابت است */
 
 .letter {
   position: absolute;
-  z-index: 1;
-  left: 7%;
-  top: 5%;
-  width: 86%;
-  height: 89%;
-  padding: 25px 21px;
-  overflow: hidden;
+  z-index: 2;
+  width: min(82vw, 320px);
+  height: 285px;
+  bottom: 53px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 25px 22px;
   color: var(--ink);
-  border: 1px solid rgba(79,51,27,.55);
-
-  background-color: #cfb386;
-  background-image:
-    radial-gradient(ellipse at 16% 18%,
-      rgba(255,244,207,.55), transparent 34%),
-    radial-gradient(ellipse at 88% 82%,
-      rgba(106,64,30,.18), transparent 40%),
-    repeating-linear-gradient(0deg,
-      transparent 0 3px,
-      rgba(85,55,29,.055) 4px,
-      transparent 5px 8px),
-    repeating-linear-gradient(91deg,
-      transparent 0 7px,
-      rgba(255,239,194,.055) 8px,
-      transparent 9px 14px),
-    linear-gradient(125deg,#e4d0a6,#c5a779 85%,#b09265);
-
-  box-shadow:
-    inset 0 0 20px rgba(83,49,24,.17),
-    0 5px 15px rgba(0,0,0,.3);
-
-  transform: translateY(7%);
+  background:
+    radial-gradient(ellipse at 15% 15%, #f6e9ca 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 90%, #c8b28a 0%, transparent 50%),
+    linear-gradient(130deg, #e8d9b7, #ddc9a1);
+  border: 1px solid #b5a078;
+  box-shadow: 0 5px 20px #0005;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
   transition:
-    transform 1.8s cubic-bezier(.2,.7,.2,1),
-    top 1.8s ease,
-    height 1.5s ease,
-    width 1.5s ease,
-    left 1.5s ease;
+    transform 1.2s cubic-bezier(.2,.7,.2,1),
+    opacity .7s ease,
+    height .7s ease,
+    visibility .7s;
 }
-
-/* A VERY SUBTLE PAPER EDGE */
 
 .letter::before {
   content: "";
   position: absolute;
-  inset: 5px;
-  border: 1px solid rgba(95,62,31,.16);
+  inset: 9px;
+  border: 1px solid #9c835a55;
   pointer-events: none;
 }
 
 .letter-content {
-  opacity: 0;
-  transition: opacity 1s ease;
-  transition-delay: 1.1s;
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.letter h2 {
-  margin: 0 0 15px;
+.page {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #9c8158 transparent;
+  padding: 2px 2px 12px;
+  animation: pageAppear .45s ease both;
+}
+
+.page.active {
+  display: block;
+}
+
+.page h2 {
+  font-family: "Marck Script", cursive;
+  font-size: 29px;
+  font-weight: 400;
+  margin: 5px 0 17px;
   text-align: center;
-  font-family: "Caveat", cursive;
-  font-size: 32px;
-  font-weight: 600;
+  color: #57262a;
 }
 
-.letter p {
-  margin: 0;
+.page p {
+  font-size: 17px;
+  line-height: 1.75;
+  margin: 0 0 14px;
+  overflow-wrap: anywhere;
+}
+
+.page .small-line {
+  width: 48px;
+  height: 1px;
+  background: #99764d;
+  margin: 18px auto;
+}
+
+.page-number {
+  text-align: center;
+  font-size: 12px;
+  color: #796447;
+  padding-top: 5px;
+}
+
+.page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #a9916b66;
+}
+
+.page-controls button {
+  border: 1px solid #8d7251;
+  color: #49372b;
+  background: #e5d2ad;
+  padding: 7px 12px;
+  cursor: pointer;
   font-size: 14px;
-  line-height: 1.85;
-  font-style: italic;
+  transition: background .2s ease;
 }
 
-/* BURGUNDY ENVELOPE WITH LAYERED PAPER TEXTURE */
+.page-controls button:hover {
+  background: #d2bb91;
+}
+
+.page-controls button:disabled {
+  opacity: .3;
+  cursor: default;
+}
+
+.page-count {
+  font-size: 13px;
+  color: #796447;
+  white-space: nowrap;
+}
+
+/* پاکت */
 
 .envelope {
   position: absolute;
+  width: 100%;
+  height: 225px;
+  bottom: 35px;
+  left: 0;
   z-index: 3;
-  inset: 0;
-  overflow: visible;
-  border: 1px solid rgba(204,157,119,.35);
-  border-radius: 2px;
-
-  background-color: var(--wine);
-  background-image:
-    radial-gradient(ellipse at 13% 12%,
-      rgba(173,85,95,.22), transparent 33%),
-    radial-gradient(ellipse at 88% 86%,
-      rgba(11,0,4,.48), transparent 45%),
-    repeating-linear-gradient(7deg,
-      transparent 0 2px,
-      rgba(14,0,5,.13) 3px,
-      transparent 4px 7px),
-    repeating-linear-gradient(93deg,
-      transparent 0 5px,
-      rgba(255,197,168,.035) 6px,
-      transparent 7px 11px),
-    linear-gradient(135deg,
-      #681d30 0%,
-      #4b1020 38%,
-      #3b0b19 72%,
-      #260710 100%);
-
+  background:
+    radial-gradient(ellipse at 30% 20%, #762d38 0%, transparent 55%),
+    linear-gradient(145deg, #64212c, #47151e 58%, #351016);
   box-shadow:
-    inset 0 0 0 5px rgba(15,0,5,.12),
-    inset 0 0 24px rgba(0,0,0,.38),
-    inset 0 1px 0 rgba(255,217,188,.12);
+    0 25px 45px #0009,
+    inset 0 0 20px #20070b88;
+  border: 1px solid #7c3b41;
+  border-radius: 2px;
+  transition: opacity .9s ease, transform .9s ease;
 }
+
+/* بافت پارچه‌ای و کاغذی روی پاکت */
 
 .envelope::before {
   content: "";
   position: absolute;
-  inset: 8px;
-  border: 1px solid rgba(206,162,121,.17);
+  inset: 0;
+  opacity: .13;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      #e5b8a0 4px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 4px,
+      #140509 5px,
+      transparent 6px
+    );
+}
+
+.envelope-front {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 2;
   pointer-events: none;
 }
 
-.envelope::after {
+.envelope-front::before {
   content: "";
   position: absolute;
   inset: 0;
-  pointer-events: none;
   background:
-    linear-gradient(32deg,
-      transparent 49.6%,
-      rgba(12,0,4,.3) 50%,
-      transparent 50.5%),
-    linear-gradient(148deg,
-      transparent 49.6%,
-      rgba(12,0,4,.25) 50%,
-      transparent 50.5%);
+    linear-gradient(32deg, transparent 49.5%, #301016aa 50%, transparent 50.6%),
+    linear-gradient(-32deg, transparent 49.5%, #301016aa 50%, transparent 50.6%);
 }
-
-/* ADDRESS */
 
 .address {
   position: absolute;
+  left: 19px;
+  bottom: 17px;
   z-index: 3;
-  left: 9%;
-  top: 17%;
-  transform: rotate(-4deg);
+  color: #1e0e10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transform: rotate(-3deg);
 }
 
 .address .for {
-  display: block;
-  color: #21100f;
-  font-family: "Caveat", cursive;
-  font-size: clamp(30px, 8vw, 39px);
-  font-weight: 600;
-  white-space: nowrap;
-  text-shadow: 0 1px rgba(235,195,152,.13);
+  font-family: "Marck Script", cursive;
+  font-size: 23px;
+  font-weight: 400;
+  text-shadow: 0 1px 1px #b76b70;
 }
 
 .address .line {
-  display: block;
-  width: 68%;
+  width: 105px;
   height: 1px;
-  margin-top: 1px;
-  background: rgba(24,9,8,.55);
-  transform: rotate(-2deg);
+  background: #28101488;
+  margin-top: 2px;
+  transform: rotate(-1deg);
 }
 
-/* HAND-DRAWN JOKER MARK */
-
-.joker {
-  position: absolute;
-  z-index: 3;
-  width: 32px;
-  height: 38px;
-  left: 82%;
-  top: 25%;
-  transform: rotate(8deg);
-}
-
-/* THE ENVELOPE FLAP */
+/* درِ پاکت */
 
 .flap {
   position: absolute;
-  inset: 0 0 auto;
-  height: 58%;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 120px;
   z-index: 4;
   transform-origin: top center;
-  transform-style: preserve-3d;
+  transform: rotateX(0deg);
+  transition: transform 1.1s ease;
   backface-visibility: visible;
-  clip-path: polygon(0 0,100% 0,50% 100%);
-
-  background-color: #541426;
-  background-image:
-    radial-gradient(ellipse at 50% 0%,
-      rgba(192,99,105,.16), transparent 65%),
-    repeating-linear-gradient(8deg,
-      transparent 0 4px,
-      rgba(16,0,5,.08) 5px,
-      transparent 6px 9px),
-    linear-gradient(155deg,#742039,#4a1022 70%,#310814);
-
-  border-top: 1px solid rgba(222,177,138,.19);
-  transition: transform 1.45s cubic-bezier(.2,.7,.2,1);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background:
+    linear-gradient(160deg, #762a36, #521923 65%, #3b1119);
+  filter: drop-shadow(0 4px 3px #17080a66);
 }
-
-.flap::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg,
-    rgba(255,218,175,.08), transparent 70%);
-}
-
-/* WAX SEAL */
 
 .seal {
   position: absolute;
   z-index: 6;
   left: 50%;
-  top: 61%;
-  width: 84px;
-  height: 84px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: translate(-50%,-50%) rotate(3deg);
-  border-radius: 48% 52% 49% 51%;
-  border: 1px solid rgba(255,174,148,.28);
+  top: 72px;
+  transform: translateX(-50%);
+  width: 75px;
+  height: 75px;
+  border: none;
+  border-radius: 47% 53% 48% 52% / 53% 46% 54% 47%;
   cursor: pointer;
-  color: #170c0b;
-  -webkit-tap-highlight-color: transparent;
-
+  padding: 0;
+  color: #21090d;
   background:
-    radial-gradient(ellipse at 32% 24%,
-      #a33a43 0%,
-      #831e2d 30%,
-      #5b1020 68%,
-      #350811 100%);
-
+    radial-gradient(ellipse at 32% 24%, #a6474b 0%, transparent 32%),
+    radial-gradient(ellipse at 65% 75%, #3b0d15 0%, transparent 45%),
+    linear-gradient(145deg, #79212d, #a52e3c 40%, #681925 75%, #3c1017);
   box-shadow:
-    0 5px 12px rgba(0,0,0,.52),
-    inset 2px 3px 5px rgba(255,181,155,.21),
-    inset -3px -4px 8px rgba(0,0,0,.42);
-
+    0 4px 8px #16060999,
+    inset 0 2px 3px #d66a6a77,
+    inset 0 -5px 7px #21070b99;
   transition:
-    opacity .45s ease,
-    filter .45s ease;
+    opacity .55s ease,
+    transform .55s ease,
+    filter .4s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.seal:focus-visible {
-  outline: 2px solid #e6c7a0;
-  outline-offset: 5px;
+.seal::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid #d06a6b66;
+  border-radius: 48% 52% 47% 53% / 52% 47% 53% 48%;
+  box-shadow: inset 0 0 0 2px #3c0e1544;
+}
+
+.seal::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 7px;
+  top: 9px;
+  left: 13px;
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  background: #e8a1a033;
+  filter: blur(2px);
+}
+
+.seal:hover {
+  filter: brightness(1.12);
 }
 
 .seal svg {
-  width: 49px;
-  height: 49px;
-  filter: drop-shadow(0 1px 1px rgba(255,172,140,.1));
+  position: absolute;
+  inset: 14px;
+  width: calc(100% - 28px);
+  height: calc(100% - 28px);
+  filter: drop-shadow(0 1px 1px #c66b6b33);
 }
 
 .seal-caption {
-  margin-top: 27px;
+  margin-top: 20px;
+  color: #a88a78;
+  font-size: 14px;
+  letter-spacing: 2px;
   text-align: center;
-  color: #aa8d6a;
-  font-family: "Caveat", cursive;
-  font-size: 23px;
-  opacity: 0;
-  animation: fadeIn 1.8s ease forwards;
-  animation-delay: 2.5s;
+  transition: opacity .5s ease;
+  animation: breathe 2.5s ease-in-out infinite;
 }
 
-/* OPENING */
+/* باز شدن پاکت */
+
+.scene.open .seal {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) scale(.6) rotate(-25deg);
+}
 
 .scene.open .flap {
   transform: rotateX(180deg);
 }
 
 .scene.open .letter {
-  z-index: 4;
-  transform: translateY(-13%);
-}
-
-.scene.open .seal {
-  animation: breakSeal .55s ease forwards;
-  pointer-events: none;
+  visibility: visible;
+  opacity: 1;
+  z-index: 5;
+  transform: translate(-50%, -85px);
 }
 
 .scene.open .seal-caption {
   opacity: 0;
-  transition: opacity .3s;
 }
 
-.scene.open .letter-content {
-  opacity: 1;
+.scene.open .intro {
+  opacity: .45;
+  transform: translateY(-8px);
 }
 
-/* READING MODE */
+/* حالت مطالعه؛ خود کاغذ بزرگ نمی‌شود */
 
 .scene.reading {
-  max-width: 600px;
-  perspective: none;
-}
-
-.scene.reading .envelope-area {
-  height: 0;
-  aspect-ratio: auto;
-  margin: 0;
-  filter: none;
-  animation: none;
-}
-
-.scene.reading .paper-back {
-  display: none;
-}
-
-.scene.reading .envelope {
-  display: none;
-}
-
-.scene.reading .letter {
-  position: relative;
-  z-index: 5;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: auto;
-  min-height: 65vh;
-  margin: 0 auto;
-  padding: 34px 27px;
-  overflow: visible;
-  transform: none;
-}
-
-.scene.reading .letter-content {
-  opacity: 1;
+  justify-content: flex-start;
+  padding-top: 25px;
+  padding-bottom: 30px;
 }
 
 .scene.reading .intro {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
+  opacity: .9;
+}
+
+.scene.reading .intro h1 {
+  font-size: 25px;
+}
+
+.scene.reading .intro p {
+  font-size: 11px;
+}
+
+.scene.reading .envelope-area {
+  height: 440px;
+  width: min(88vw, 370px);
+  flex: 0 0 auto;
+}
+
+.scene.reading .letter {
+  width: min(82vw, 320px);
+  height: 285px;
+  bottom: 53px;
+  transform: translate(-50%, -85px);
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  z-index: 5;
+}
+
+.scene.reading .envelope {
+  transform: translateY(35px);
+  opacity: .8;
 }
 
 .scene.reading .seal-caption {
   display: none;
 }
 
-.continue {
-  display: block;
-  margin: 25px auto 0;
-  padding: 11px 19px;
-  border: 1px solid rgba(66,35,23,.4);
-  background: rgba(60,24,22,.12);
-  color: #593023;
-  font-family: "IM Fell English", Georgia, serif;
-  font-size: 14px;
-  cursor: pointer;
+.scene.reading .paper-back {
+  opacity: .8;
 }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-@keyframes revealScene {
-  0% {
+@keyframes pageAppear {
+  from {
     opacity: 0;
-    transform: translateY(15px) rotate(-2deg) scale(.96);
-    filter: brightness(.25);
+    transform: translateY(5px);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0) rotate(-2deg) scale(1);
-    filter: brightness(1);
+    transform: translateY(0);
   }
 }
 
-@keyframes breakSeal {
-  0% {
-    transform: translate(-50%,-50%) rotate(3deg) scale(1);
-    opacity: 1;
-  }
-  35% {
-    transform: translate(-50%,-50%) rotate(12deg) scale(1.08);
-    filter: brightness(1.5);
-  }
-  100% {
-    transform: translate(-50%,-50%) rotate(-22deg) scale(.2);
-    opacity: 0;
-    filter: brightness(1.7);
-  }
+@keyframes breathe {
+  0%, 100% { opacity: .6; }
+  50% { opacity: 1; }
 }
+
+/* موبایل‌های کوچک */
 
 @media (max-width: 360px) {
-  body { padding-inline: 14px; }
-  .seal { width: 72px; height: 72px; }
-  .letter { padding: 18px 14px; }
-  .address .for { font-size: 29px; }
+  .scene {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .envelope-area {
+    width: 94vw;
+  }
+
+  .letter {
+    padding: 20px 17px;
+  }
+
+  .page p {
+    font-size: 16px;
+  }
+
+  .address .for {
+    font-size: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 </style>
 </head>
@@ -550,81 +567,147 @@ body::before {
     <p>One secret · One heart</p>
   </header>
 
-  <div class="envelope-area">
+  <div class="envelope-area" id="envelopeArea">
 
     <div class="paper-back one"></div>
     <div class="paper-back two"></div>
 
+    <!-- صفحات نامه -->
     <article class="letter" id="letter">
+
       <div class="letter-content">
 
-        <h2>My Harley Quinn</h2>
+        <section class="page active">
+          <h2>My Harley Quinn</h2>
+          <p>
+            Some letters are written to be read
+            and some are written because silence
+            has become too heavy to carry
+          </p>
+          <div class="small-line"></div>
+          <p>
+            This one belongs to you
+            and only you
+          </p>
+        </section>
 
-        <p>
-          Some letters are written to be read.
-          Others wait in the darkness until the right person finds them.
-          This one has been waiting for you.
-          <br><br>
-          Take your time, Harley.
-          The night is quiet, and these words are yours.
-        </p>
+        <section class="page">
+          <h2>A little secret</h2>
+          <p>
+            There are things that are difficult
+            to explain in ordinary words
+          </p>
+          <p>
+            So I decided to leave them here
+            between the shadows and the ink
+            where they can wait for you
+          </p>
+        </section>
 
-        <button class="continue" id="continueBtn" type="button">
-          Read the letter
-        </button>
+        <section class="page">
+          <h2>For you</h2>
+          <p>
+            If the world ever feels too loud
+            remember that you do not have to
+            be strong every single moment
+          </p>
+          <p>
+            Even the darkest nights eventually
+            give way to morning
+          </p>
+        </section>
+
+        <section class="page">
+          <h2>The last page</h2>
+          <p>
+            And if you have made it this far
+            then perhaps the secret was never
+            hidden in the letter itself
+          </p>
+          <div class="small-line"></div>
+          <p>
+            Perhaps it was always in the person
+            for whom it was written
+          </p>
+        </section>
+
+        <div class="page-number" id="pageNumber">01</div>
+
+        <div class="page-controls">
+          <button id="prevBtn" type="button" disabled>Previous</button>
+          <span class="page-count" id="pageCount">1 / 4</span>
+          <button id="nextBtn" type="button">Next page</button>
+        </div>
 
       </div>
     </article>
 
-    <div class="envelope">
+    <!-- پاکت -->
+    <div class="envelope" id="envelope">
+
+      <div class="envelope-front"></div>
 
       <div class="address">
         <span class="for">For Harley Quinn</span>
         <span class="line"></span>
       </div>
 
-      <svg class="joker" viewBox="0 0 40 46" fill="none" aria-hidden="true">
-        <path d="M7 10 L16 15 L11 5 Z"
-          stroke="#17100e" stroke-width="1.8"/>
-        <path d="M23 14 L32 7 L30 18"
-          stroke="#17100e" stroke-width="1.8"/>
-        <path d="M11 21 L16 19 L14 24 Z"
-          fill="#17100e"/>
-        <path d="M25 20 L31 22 L26 25 Z"
-          fill="#17100e"/>
-        <path d="M10 29 Q20 35 31 26 Q27 40 16 37 Z"
-          stroke="#17100e" stroke-width="2"
-          stroke-linejoin="round"/>
-      </svg>
-
       <div class="flap"></div>
 
-      <button class="seal" id="sealBtn"
-        type="button" aria-label="Open the letter">
+      <!-- مُهر مومی با نقش گربه و رز -->
+      <button class="seal" id="sealBtn" type="button"
+              aria-label="Open the letter">
 
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <g fill="#160d0c">
-            <path d="M8 10 L23 20 L19 34 L12 29 Z"/>
-            <path d="M56 10 L41 20 L45 34 L52 29 Z"/>
-            <path d="M13 26 Q32 14 51 26 L48 43 Q41 54 32 54 Q23 54 16 43 Z"/>
-            <path d="M20 33 L28 36 L21 39 Z" fill="#a52c37"/>
-            <path d="M44 33 L36 36 L43 39 Z" fill="#a52c37"/>
-            <circle cx="32" cy="22" r="6"/>
-            <circle cx="27" cy="19" r="4"/>
-            <circle cx="36" cy="18" r="4"/>
-            <circle cx="37" cy="25" r="4"/>
-            <path d="M32 28 L31 36 L36 33 L38 38"
-              fill="none" stroke="#160d0c"
-              stroke-width="2.4" stroke-linecap="round"/>
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- ساقه و برگ‌های رز -->
+          <g fill="none" stroke="#26090e" stroke-width="3.2"
+             stroke-linecap="round" stroke-linejoin="round">
+
+            <path d="M52 49 C57 59 49 70 43 76"/>
+            <path d="M52 62 C61 57 67 59 69 64"/>
+            <path d="M48 68 C39 62 33 64 31 69"/>
+
+            <path d="M51 58
+                     C39 56 36 45 43 39
+                     C46 34 53 34 57 39
+                     C64 36 70 43 66 49
+                     C63 54 57 57 51 58Z"/>
+
+            <path d="M49 48
+                     C43 44 48 38 53 42
+                     C58 46 53 51 49 48Z"/>
+
+            <!-- صورت گربه -->
+            <path d="M19 29 L20 12 L35 22
+                     Q43 18 51 22
+                     L66 12 L67 30
+                     Q77 41 69 53
+                     Q60 65 43 63
+                     Q25 62 18 48
+                     Q14 38 19 29Z"/>
+
+            <!-- چشم‌ها -->
+            <path d="M27 37 Q33 31 39 37"/>
+            <path d="M47 37 Q53 31 59 37"/>
+
+            <!-- بینی و سبیل -->
+            <path d="M39 43 L43 46 L47 43"/>
+            <path d="M43 46 L43 51"/>
+            <path d="M36 48 L24 46"/>
+            <path d="M36 52 L25 55"/>
+            <path d="M50 48 L62 46"/>
+            <path d="M50 52 L61 55"/>
+
           </g>
-        </svg>
 
+        </svg>
       </button>
 
     </div>
   </div>
 
-  <div class="seal-caption">
+  <div class="seal-caption" id="sealCaption">
     Break the seal, Harley...
   </div>
 
@@ -633,11 +716,16 @@ body::before {
 <script>
 const scene = document.getElementById("scene");
 const sealBtn = document.getElementById("sealBtn");
-const continueBtn = document.getElementById("continueBtn");
+const pages = Array.from(document.querySelectorAll(".page"));
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const pageCount = document.getElementById("pageCount");
+const pageNumber = document.getElementById("pageNumber");
 
+let currentPage = 0;
 let opened = false;
 
-sealBtn.addEventListener("click", () => {
+function openLetter() {
   if (opened) return;
 
   opened = true;
@@ -645,20 +733,37 @@ sealBtn.addEventListener("click", () => {
 
   window.setTimeout(() => {
     scene.classList.add("reading");
+    updatePages();
+  }, 1200);
+}
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }, 1900);
-});
-
-continueBtn.addEventListener("click", () => {
-  document.getElementById("letter").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
+function updatePages() {
+  pages.forEach((page, index) => {
+    page.classList.toggle("active", index === currentPage);
   });
-});
+
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = currentPage === pages.length - 1;
+
+  pageCount.textContent = `${currentPage + 1} / ${pages.length}`;
+  pageNumber.textContent = String(currentPage + 1).padStart(2, "0");
+}
+
+function changePage(direction) {
+  const nextPage = currentPage + direction;
+
+  if (nextPage < 0 || nextPage >= pages.length) return;
+
+  currentPage = nextPage;
+  updatePages();
+}
+
+sealBtn.addEventListener("click", openLetter);
+
+prevBtn.addEventListener("click", () => changePage(-1));
+nextBtn.addEventListener("click", () => changePage(1));
+
+updatePages();
 </script>
 
 </body>
