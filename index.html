@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#100c0d">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d090a">
+<meta name="color-scheme" content="dark">
 
 <title>A Letter from the Shadows</title>
 
@@ -13,200 +14,302 @@
 
 <style>
 :root {
-  --wine: #571b2a;
-  --wine-dark: #310e18;
-  --paper: #e8d8b8;
+  --W: min(90vw, 340px);      /* عرض پاکت */
+  --lw: min(84vw, 310px);     /* عرض نامه */
+  --lh: 300px;                /* ارتفاع نامه */
+  --env-top: 275px;           /* فاصله بالای پاکت از بالای صحنه */
+  --fit: 1;
   --ink: #30221d;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  background: #100c0d;
-}
+html { background: #0d090a; }
 
 body {
   margin: 0;
   min-height: 100vh;
   min-height: 100svh;
   overflow-x: hidden;
-  background:
-    radial-gradient(ellipse at 50% 45%,
-    #392327 0%, #211619 43%, #100c0d 100%);
   color: #e5d5bd;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  background: radial-gradient(ellipse at 30% 22%, #3a2528 0%, #1f1417 46%, #0d090a 100%);
 }
 
-button {
-  font: inherit;
-  -webkit-tap-highlight-color: transparent;
+/* بافت میز: رگه‌های ریز چوب + دانه */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(92deg, rgba(255,255,255,.014) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(88deg, rgba(0,0,0,.07) 0 2px, transparent 2px 13px);
 }
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .14;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+}
+
+button { font: inherit; -webkit-tap-highlight-color: transparent; }
+button:focus-visible { outline: 2px solid #d9a679; outline-offset: 3px; }
+
+/* ───────── صحنه ───────── */
 
 .scene {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
-  padding: 25px 12px;
-  isolation: isolate;
-}
-
-.scene::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .15;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+  padding: 18px 12px 22px;
 }
 
 .intro {
   text-align: center;
-  margin-bottom: 28px;
-  transition: opacity .8s ease, transform .8s ease;
+  margin-bottom: 6px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 2.2s ease 1.3s, transform 2.2s ease 1.3s;
 }
+.scene.lit .intro { opacity: 1; transform: none; }
 
 .intro h1 {
-  margin: 0 0 7px;
-  font-size: clamp(27px, 7vw, 40px);
+  margin: 0 0 6px;
+  font-size: clamp(27px, 7vw, 38px);
   font-weight: 400;
   letter-spacing: 1px;
   color: #ddc7ad;
+  text-shadow: 0 0 18px rgba(255,150,80,.18);
 }
-
 .intro p {
   margin: 0;
-  font-size: 11px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 3px;
   color: #a78b85;
 }
 
-/* صحنه اصلی */
-
-.envelope-area {
-  width: min(86vw, 355px);
-  height: 370px;
+.stage-fit {
   position: relative;
-  flex: 0 0 auto;
-  perspective: 1200px;
-  transform: scale(.88);
-  transform-origin: center center;
-  transition: transform 1.2s ease;
+  flex: none;
+  width: calc(var(--W) * var(--fit));
+  height: calc(500px * var(--fit));
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 2s ease 1s, transform 2.2s cubic-bezier(.2,.7,.2,1) 1s;
 }
+.scene.lit .stage-fit { opacity: 1; transform: none; }
+
+.stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--W);
+  height: 500px;
+  transform: scale(var(--fit));
+  transform-origin: 0 0;
+}
+
 
 /* کاغذهای قدیمی پشت پاکت */
-
 .paper-back {
   position: absolute;
-  left: 50%;
-  bottom: 42px;
-  width: 87%;
-  height: 225px;
-  border: 1px solid #a99470;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 23px,
-      #81674619 24px,
-      transparent 25px
-    ),
-    linear-gradient(125deg, #d2c09d, #eee1c4 48%, #c9b48e);
-  box-shadow: 0 12px 22px #0007;
-  transition: opacity .7s ease, transform .8s ease;
-}
-
-.paper-back.one {
-  bottom: 48px;
-  transform: translateX(-50%) rotate(-9deg);
-}
-
-.paper-back.two {
+  left: 5%;
+  top: 252px;
   width: 90%;
-  bottom: 42px;
-  transform: translateX(-50%) rotate(7deg);
+  height: 228px;
+  overflow: hidden;
+  border: 1px solid #8f7a58;
   background:
-    linear-gradient(115deg, #d2c09e, #e6d7b5 60%, #c7b28c);
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(129,103,70,.12) 24px, transparent 25px),
+    linear-gradient(125deg, #bfab82, #dccdab 50%, #b09a73);
+  box-shadow: 0 10px 20px rgba(0,0,0,.6);
+  pointer-events: none;
 }
+.paper-back.one   { transform: rotate(-9deg) translateX(-4px); }
+.paper-back.two   { top: 258px; width: 92%; left: 4%; transform: rotate(6deg) translateX(3px); background: linear-gradient(115deg, #b9a47c, #d6c6a3 60%, #ad966d); }
+.paper-back.three { top: 262px; width: 82%; left: 9%; transform: rotate(-2.5deg); opacity: .95; }
 
-/* پاکت اصلی */
+/* ───────── سایه‌های روی میز ───────── */
+
+.env-shadow,
+.env-contact {
+  position: absolute;
+  left: 0;
+  top: var(--env-top);
+  width: 100%;
+  height: 200px;
+  background: #000;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.env-shadow  { filter: blur(15px); opacity: 0; }
+.env-contact { inset: auto; left: 2px; width: calc(100% - 4px); top: calc(var(--env-top) + 4px); height: 196px; filter: blur(3px); opacity: .6; }
+
+/* ───────── پاکت ───────── */
+
+.env-sway {
+  position: absolute;
+  left: 0;
+  top: var(--env-top);
+  width: 100%;
+  height: 200px;
+  perspective: 1200px;
+  will-change: transform;
+}
 
 .envelope {
   position: absolute;
-  width: 100%;
-  height: 220px;
-  left: 0;
-  bottom: 35px;
-  z-index: 3;
-  transform-style: preserve-3d;
-  transition:
-    transform 1.1s cubic-bezier(.2,.7,.2,1),
-    opacity .7s ease;
+  inset: 0;
+  perspective: 900px;
+  perspective-origin: 50% 20%;
+  will-change: transform;
 }
 
-.envelope-face {
+.envelope > * { position: absolute; }
+
+.env-lining {
+  inset: 0;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(220,150,130,.07) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(-45deg, rgba(220,150,130,.07) 0 1px, transparent 1px 9px),
+    linear-gradient(160deg, #3d131d, #290b12);
+}
+
+/* در پاکت: لولا در بالا، دو رو (بیرون/داخل) */
+.flap-wrap {
+  left: 0; top: 0;
+  width: 100%;
+  height: 122px;
+  z-index: 4;
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+}
+.envelope.flap-open .flap-wrap { z-index: 1; }
+
+.flap-sway {
   position: absolute;
   inset: 0;
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+.flap-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flap-in { transform: rotateY(180deg); }
+
+.flap-face svg,
+.pocket-svg,
+.flap-shadow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.flap-shade {
+  position: absolute;
+  inset: 0;
+  background: #14040a;
+  opacity: 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  pointer-events: none;
+}
+
+.flap-shadow {
+  left: 0; top: 4px;
+  width: 100%;
+  height: 122px;
+  z-index: 3;
+  filter: blur(3.5px);
+  pointer-events: none;
+}
+
+/* جلوی پاکت */
+.pocket {
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.pocket-svg { filter: drop-shadow(0 -2px 2px rgba(0,0,0,.55)); }
+
+.pocket .sheen-wrap { clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%); }
+
+.address {
+  left: 50%;
+  bottom: 15px;
+  z-index: 3;
+  transform: translateX(-50%) rotate(-2deg);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.address span {
+  display: block;
+  font-family: "Marck Script", cursive;
+  font-size: 22px;
+  color: #d8b98d;
+  opacity: .88;
+  text-shadow: 0 1px 0 rgba(0,0,0,.6), 0 0 8px rgba(216,185,141,.15);
+}
+.address .line {
+  width: 100px;
+  height: 1px;
+  margin: 1px auto 0;
+  background: #d8b98d66;
+}
+
+.letter-slot.front-part { z-index: 2; }
+.envelope.letter-out .letter-slot { z-index: 5; }
+
+/* پشت پاکت */
+.back-view {
+  inset: 0;
+  z-index: 9;
+  visibility: hidden;
   overflow: hidden;
   border: 1px solid #783a43;
-  border-radius: 2px;
-  backface-visibility: hidden;
-  background:
-    radial-gradient(ellipse at 27% 16%, #792f3d 0%, transparent 53%),
-    repeating-linear-gradient(
-      115deg,
-      transparent 0 4px,
-      #15060b13 5px,
-      transparent 6px
-    ),
-    linear-gradient(145deg, #652433, #4e1724 55%, #310e18);
-  box-shadow:
-    0 22px 36px #0008,
-    inset 0 1px 1px #c17c7744,
-    inset 0 -4px 10px #18070c77;
-}
-
-.envelope-front {
-  transform: rotateY(0deg) translateZ(1px);
-}
-
-.envelope-back {
-  transform: rotateY(180deg) translateZ(1px);
+  background: linear-gradient(145deg, #632433, #4b1724 55%, #2c0c15);
+  box-shadow: inset 0 1px 1px rgba(193,124,119,.28), inset 0 -4px 10px rgba(24,7,12,.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    repeating-linear-gradient(
-      115deg,
-      transparent 0 4px,
-      #15060b13 5px,
-      transparent 6px
-    ),
-    linear-gradient(145deg, #59202d, #461522 60%, #2b0c15);
 }
+.envelope.backview .front-part { visibility: hidden; }
+.envelope.backview .back-view { visibility: visible; }
 
 .back-inscription {
+  position: relative;
   width: 80%;
   text-align: center;
   color: #c2a17f;
   transform: rotate(-3deg);
 }
-
 .back-inscription .small {
   display: block;
-  font-size: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 3px;
   color: #9d796b;
   margin-bottom: 12px;
 }
-
 .back-inscription .secret {
   display: block;
   font-family: "Marck Script", cursive;
@@ -214,7 +317,6 @@ button {
   line-height: 1.4;
   text-shadow: 0 1px 1px #17070b;
 }
-
 .back-inscription .ornament {
   display: block;
   margin-top: 13px;
@@ -223,188 +325,144 @@ button {
   letter-spacing: 5px;
 }
 
-/* چین‌های روی جلوی پاکت */
-
-.envelope-folds {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.envelope-folds::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(32deg, transparent 49.5%, #7e3542 50%, #41121e 100%);
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-}
-
-.envelope-folds::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(148deg, transparent 49.5%, #702638 50%, #351019 100%);
-  clip-path: polygon(0 0, 0 100%, 50% 54%, 100% 100%, 100% 0);
-  opacity: .7;
-}
-
-/* نشانی روی پاکت */
-
-.address {
-  position: absolute;
-  left: 17px;
-  bottom: 14px;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  transform: rotate(-3deg);
-  pointer-events: none;
-}
-
-.address span {
-  font-family: "Marck Script", cursive;
-  font-size: 21px;
-  color: #211014;
-}
-
-.address .line {
-  width: 92px;
-  height: 1px;
-  margin-top: 1px;
-  background: #28101688;
-}
-
-/* در پاکت */
-
-.flap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 122px;
-  z-index: 5;
-  transform-origin: top center;
-  backface-visibility: hidden;
-  transform: rotateX(0deg);
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  background:
-    linear-gradient(155deg, #762c3c, #581b2b 60%, #3a111c);
-  transition: transform 1s ease;
-}
-
-/* مهر مومی */
+/* ───────── مهر مومی ───────── */
 
 .seal {
-  position: absolute;
-  top: 74px;
   left: 50%;
+  top: 86px;
   z-index: 7;
-  width: 69px;
-  height: 69px;
+  width: 66px;
+  height: 66px;
   padding: 0;
-  border: 1px solid #a64d58;
-  border-radius: 46% 54% 51% 48% / 52% 46% 54% 48%;
-  transform: translateX(-50%) rotate(-5deg);
+  border: 0;
+  background: none;
   cursor: pointer;
-  background:
-    radial-gradient(ellipse at 30% 23%, #bd5c65 0%, transparent 32%),
-    radial-gradient(ellipse at 70% 80%, #3c0d17 0%, transparent 48%),
-    linear-gradient(135deg, #8b2939, #681a2b 60%, #420f1d);
-  box-shadow:
-    0 5px 9px #0008,
-    inset 0 2px 3px #e79b9b44,
-    inset 0 -4px 6px #25070e99;
-  transition: opacity .5s ease, transform .5s ease;
+  transform: translateX(-50%) rotate(-5deg);
+  filter: drop-shadow(0 4px 3px rgba(0,0,0,.65));
 }
-
-.seal::before {
-  content: "";
+.seal:disabled { pointer-events: none; }
+.seal svg { display: block; width: 100%; height: 100%; overflow: visible; transition: transform .15s ease; }
+.seal:active svg { transform: scale(.94); }
+.seal-glow {
   position: absolute;
-  inset: 5px;
-  border: 1px solid #d58b8a55;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 2px #320a1444;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,140,90,.38), rgba(255,140,90,0) 65%);
+  opacity: 0;
+  animation: sealPulse 3.2s ease-in-out 3.2s infinite;
+  pointer-events: none;
+}
+@keyframes sealPulse { 0%,100% { opacity: 0; } 50% { opacity: .9; } }
+
+.gloss { filter: blur(1.6px); will-change: transform, opacity; }
+
+.residue {
+  left: 50%;
+  top: 92px;
+  width: 56px;
+  height: 40px;
+  z-index: 3;
+  margin-left: -28px;
+  opacity: 0;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.6));
+  pointer-events: none;
+}
+.residue svg { display: block; width: 100%; height: 100%; }
+
+.crumb {
+  left: 50%;
+  top: 117px;
+  z-index: 8;
+  pointer-events: none;
+  background: radial-gradient(circle at 35% 30%, #b8454f, #5a1220);
+  box-shadow: 0 1px 2px #0008;
 }
 
-.cat-mark {
+/* ───────── نامه ───────── */
+
+.letter-slot {
+  left: 50%;
+  top: 0;
+  width: var(--lw);
+  height: var(--lh);
+  z-index: 2;
+  transform-origin: 50% 0;
+  transform: translate(-50%, 15px) scale(.6);
+  perspective: 800px;
+  will-change: transform;
+}
+
+.letter-shadow {
   position: absolute;
-  inset: 12px;
-  width: calc(100% - 24px);
-  height: calc(100% - 24px);
-  filter: drop-shadow(0 1px 1px #21070b77);
+  inset: 0;
+  background: #000;
+  filter: blur(13px);
+  opacity: 0;
+  will-change: transform, opacity;
+  pointer-events: none;
 }
 
-.cat-mark .cat {
-  fill: #16080c;
-  stroke: #16080c;
-  stroke-width: 1;
-  stroke-linejoin: round;
+.letter-sway {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 40%;
+  will-change: transform;
 }
-
-.cat-mark .eye {
-  fill: #7b2836;
-  stroke: none;
-}
-
-/* نامه */
 
 .letter {
   position: absolute;
-  z-index: 2;
-  width: min(80vw, 310px);
-  height: 270px;
-  left: 50%;
-  bottom: 53px;
-  padding: 23px 21px 15px;
+  inset: 0;
   overflow: hidden;
   color: var(--ink);
   border: 1px solid #b5a078;
   background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 23px,
-      #81674618 24px,
-      transparent 25px
-    ),
-    radial-gradient(ellipse at 18% 12%, #f5e9cf, transparent 50%),
-    linear-gradient(125deg, #e9dbba, #e2d0a9 65%, #d5c09a);
-  box-shadow: 0 8px 24px #0007;
-  opacity: 0;
-  visibility: hidden;
-  transform: translate(-50%, 15px);
-  transition:
-    transform 1s cubic-bezier(.2,.7,.2,1),
-    opacity .5s ease,
-    visibility .5s;
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(129,103,70,.10) 24px, transparent 25px),
+    radial-gradient(ellipse at 18% 12%, #f5e9cf, transparent 55%),
+    linear-gradient(125deg, #e9dbba, #e2d0a9 65%, #d3be96);
+  box-shadow: inset 0 0 30px rgba(120,85,40,.34), inset 0 0 3px rgba(90,60,30,.5);
 }
 
-.letter::before {
-  content: "";
+.paper-tex {
   position: absolute;
-  inset: 9px;
-  border: 1px solid #9a80564a;
+  inset: 0;
+  mix-blend-mode: multiply;
+  opacity: .38;
   pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .6' numOctaves='4' seed='3' result='t'/%3E%3CfeDiffuseLighting in='t' lighting-color='%23fff' surfaceScale='1.4'%3E%3CfeDistantLight azimuth='50' elevation='62'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+
+.stains {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 82% 88%, rgba(140,100,50,.20), transparent 38%),
+    radial-gradient(circle at 8% 92%, rgba(120,90,50,.13), transparent 34%),
+    radial-gradient(circle at 92% 6%, rgba(130,95,50,.12), transparent 30%);
+}
+
+/* خط تای نامه وقتی تا شده */
+.creases {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom,
+      transparent 32.5%, rgba(70,45,20,.30) 33.2%, rgba(255,250,235,.38) 33.8%, transparent 36%,
+      transparent 64.5%, rgba(70,45,20,.26) 66.2%, rgba(255,250,235,.34) 66.8%, transparent 69%),
+    linear-gradient(to bottom, rgba(90,60,30,.10), transparent 33%, rgba(90,60,30,.08) 66%, transparent);
 }
 
 .letter-content {
-  position: relative;
-  z-index: 1;
-  height: 100%;
+  position: absolute;
+  inset: 0;
+  padding: 24px 22px 14px;
   display: flex;
   flex-direction: column;
+  opacity: 0;
 }
 
-/* صفحه‌ها روی هم قرار می‌گیرند */
-
-.pages {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
+.pages { position: relative; flex: 1; min-height: 0; overflow: hidden; }
 
 .page {
   position: absolute;
@@ -413,34 +471,24 @@ button {
   padding: 0 2px 8px;
   opacity: 0;
   visibility: hidden;
-  transform: translateX(28px) scale(.98);
-  transition:
-    transform .45s ease,
-    opacity .4s ease,
-    visibility .4s;
+  transform: translateX(var(--in, 30px));
+  transition: transform .45s ease, opacity .4s ease, visibility 0s linear .45s;
   scrollbar-width: thin;
   scrollbar-color: #a58a62 transparent;
 }
-
 .page.active {
   opacity: 1;
   visibility: visible;
-  transform: translateX(0) scale(1);
+  transform: none;
   z-index: 2;
+  transition: transform .45s ease, opacity .4s ease, visibility 0s;
 }
-
-.page.leave-left {
+.page.out {
   opacity: 0;
   visibility: visible;
-  transform: translateX(-100%) scale(.96);
+  transform: translateX(var(--out, -30px));
   z-index: 3;
-}
-
-.page.enter-right {
-  opacity: 0;
-  visibility: visible;
-  transform: translateX(28px) scale(.98);
-  z-index: 1;
+  transition: transform .45s ease, opacity .35s ease, visibility 0s;
 }
 
 .page h2 {
@@ -451,561 +499,938 @@ button {
   font-weight: 400;
   color: #5a2630;
 }
-
 .page p {
-  font-size: 16px;
+  font-size: 16.5px;
   line-height: 1.7;
   margin: 0 0 12px;
   overflow-wrap: anywhere;
+  text-shadow: 0 0 .6px rgba(48,34,29,.55);
+}
+.page-divider { width: 42px; height: 1px; margin: 14px auto; background: #94754e; }
+
+/* متن مثل جوهر روی کاغذ ظاهر می‌شود */
+.letter.revealed .page.active > * { animation: inkIn 1s ease both; }
+.letter.revealed .page.active > *:nth-child(2) { animation-delay: .12s; }
+.letter.revealed .page.active > *:nth-child(3) { animation-delay: .26s; }
+.letter.revealed .page.active > *:nth-child(4) { animation-delay: .4s; }
+@keyframes inkIn {
+  from { opacity: 0; transform: translateY(4px); filter: blur(1.2px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
 }
 
-.page-divider {
-  width: 42px;
-  height: 1px;
-  margin: 14px auto;
-  background: #94754e;
-}
-
-.page-footer {
-  padding-top: 7px;
-  text-align: center;
-  color: #826b4d;
-  font-size: 12px;
-}
+.page-footer { padding-top: 6px; text-align: center; color: #826b4d; font-size: 12px; }
 
 .page-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  padding-top: 9px;
-  margin-top: 6px;
-  border-top: 1px solid #9e835d66;
+  padding-top: 8px;
+  margin-top: 5px;
+  border-top: 1px solid rgba(158,131,93,.4);
 }
-
 .page-controls button {
   border: 1px solid #9a805d;
-  background: #e3d0ac;
+  background: rgba(227,208,172,.7);
   color: #433126;
-  padding: 5px 10px;
-  font-size: 13px;
+  padding: 5px 11px;
+  font-size: 14px;
   cursor: pointer;
+  transition: background .2s ease, transform .1s ease;
+}
+.page-controls button:active:not(:disabled) { transform: translateY(1px); background: #d9c49b; }
+.page-controls button:disabled { opacity: .3; cursor: default; }
+.page-count { font-size: 12px; color: #80684a; white-space: nowrap; }
+
+/* ───────── نورِ شمع روی سطح‌ها ───────── */
+
+.sheen-wrap { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.sheen {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  left: -40%;
+  top: -60%;
+  opacity: 0;
+  background: radial-gradient(circle at 38% 38%, rgba(255,205,140,.42) 0%, rgba(255,175,100,.16) 30%, rgba(255,150,80,0) 58%);
+  will-change: transform, opacity;
 }
 
-.page-controls button:disabled {
-  opacity: .3;
-  cursor: default;
+/* ───────── پایین صحنه ───────── */
+
+.foot-slot {
+  position: relative;
+  width: var(--W);
+  height: 96px;
+  flex: none;
 }
-
-.page-count {
-  font-size: 12px;
-  color: #80684a;
-  white-space: nowrap;
-}
-
-/* دکمه‌های پایان */
-
-.return-area {
-  display: none;
-  margin-top: 15px;
+.foot-slot > * {
+  position: absolute;
+  left: 0; right: 0; top: 14px;
   text-align: center;
-  animation: fadeIn .8s ease both;
-}
-
-.return-area p {
-  margin: 0 0 10px;
-  color: #b49a88;
-  font-size: 14px;
-  letter-spacing: 1px;
-}
-
-.return-button {
-  padding: 9px 19px;
-  border: 1px solid #78404a;
-  background: #301219;
-  color: #d9b6a8;
-  font-size: 14px;
-  letter-spacing: 1px;
-  cursor: pointer;
 }
 
 .seal-caption {
-  margin-top: 16px;
-  text-align: center;
   color: #a98b80;
-  font-size: 14px;
-  letter-spacing: 2px;
-  animation: breathe 2.5s ease-in-out infinite;
-  transition: opacity .4s ease;
-}
-
-.ending {
-  display: none;
-  width: min(85vw, 300px);
-  margin-top: 20px;
-  text-align: center;
-  color: #d7c0a8;
-}
-
-.ending h2 {
-  font-size: 29px;
-  font-weight: 400;
-  margin: 0 0 8px;
-}
-
-.ending p {
-  color: #a58b7d;
   font-size: 15px;
-  line-height: 1.7;
-  margin: 0;
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 1.4s ease 3.4s;
+}
+.scene.lit .seal-caption { opacity: 1; animation: breathe 2.8s ease-in-out 5s infinite; }
+.scene.opened .seal-caption { opacity: 0 !important; animation: none; transition: opacity .5s ease; }
+@keyframes breathe { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+.return-area { opacity: 0; pointer-events: none; transition: opacity .8s ease; }
+.return-area.show { opacity: 1; pointer-events: auto; }
+.return-area p { margin: 0 0 10px; color: #b49a88; font-size: 15px; letter-spacing: 1px; }
+.return-button {
+  padding: 9px 20px;
+  border: 1px solid #78404a;
+  background: #301219;
+  color: #d9b6a8;
+  font-size: 15px;
+  letter-spacing: 1px;
+  cursor: pointer;
 }
 
-/* وضعیت باز شدن */
+.ending { opacity: 0; pointer-events: none; transition: opacity 1.8s ease .3s; color: #d7c0a8; }
+.scene.finished .ending { opacity: 1; }
+.scene.finished .intro { opacity: 0; transition: opacity 1s ease; }
+.ending h2 { font-size: 29px; font-weight: 400; margin: 0 0 8px; }
+.ending p { color: #a58b7d; font-size: 16px; line-height: 1.7; margin: 0 auto; max-width: 270px; }
 
-.scene.open .seal {
-  opacity: 0;
+/* بوم افکت‌ها: نور، دود، جرقه، گرد و غبار */
+#fx {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
   pointer-events: none;
-  transform: translateX(-50%) scale(.65) rotate(-18deg);
-}
-
-.scene.open .flap {
-  transform: rotateX(180deg);
-}
-
-.scene.open .letter {
-  visibility: visible;
-  opacity: 1;
-  z-index: 6;
-  transform: translate(-50%, -58px);
-}
-
-/* نامه در مرکز گوشی */
-
-.scene.reading .intro {
-  margin-bottom: 5px;
-}
-
-.scene.reading .intro h1 {
-  font-size: 27px;
-}
-
-.scene.reading .intro p {
-  font-size: 10px;
-}
-
-.scene.reading .envelope-area {
-  transform: scale(.98);
-}
-
-.scene.reading .letter {
-  width: min(80vw, 310px);
-  height: 270px;
-  transform: translate(-50%, -58px);
-}
-
-.scene.reading .seal-caption {
-  opacity: 0;
-}
-
-/* بازگشت نامه به پاکت */
-
-.scene.returning .letter {
-  opacity: 0;
-  transform: translate(-50%, 90px) scale(.83);
-  transition:
-    transform 1.1s ease,
-    opacity .9s ease,
-    visibility .9s;
-}
-
-.scene.returning .paper-back {
-  opacity: .8;
-}
-
-.scene.returning .envelope {
-  transform: rotateY(180deg);
-  transition-delay: .75s;
-}
-
-.scene.returning .flap {
-  transform: rotateX(0deg);
-  transition-delay: .65s;
-}
-
-.scene.returning .intro {
-  opacity: 0;
-}
-
-.scene.finished .intro {
-  display: none;
-}
-
-.scene.finished .envelope-area {
-  transform: scale(.92);
-}
-
-.scene.finished .letter,
-.scene.finished .seal-caption,
-.scene.finished .return-area {
-  display: none;
-}
-
-.scene.finished .ending {
-  display: block;
-  animation: fadeIn 1.5s ease both;
-}
-
-@keyframes breathe {
-  0%, 100% { opacity: .55; }
-  50% { opacity: 1; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  background: #000;
 }
 
 @media (max-width: 360px) {
-  .scene {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .envelope-area {
-    width: 92vw;
-    transform: scale(.84);
-  }
-
-  .scene.reading .envelope-area {
-    transform: scale(.91);
-  }
-
-  .letter {
-    padding: 21px 17px 14px;
-  }
-
-  .page p {
-    font-size: 15px;
-  }
+  .page p { font-size: 15.5px; }
+  .letter-content { padding: 22px 17px 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
 }
 </style>
 </head>
 
 <body>
 
+<!-- فیلترها و گرادیان‌های مشترک -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <filter id="waxRough" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="7" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <radialGradient id="waxG" cx=".35" cy=".3" r=".85">
+      <stop offset="0" stop-color="#c04a55"/>
+      <stop offset=".45" stop-color="#8b2737"/>
+      <stop offset="1" stop-color="#4b0e1b"/>
+    </radialGradient>
+  </defs>
+</svg>
+
 <main class="scene" id="scene">
 
-  <header class="intro">
+  <header class="intro" id="intro">
     <h1>A letter from the shadows</h1>
     <p>One secret · One heart</p>
   </header>
 
-  <div class="envelope-area" id="envelopeArea">
+  <div class="stage-fit" id="stageFit">
+    <div class="stage" id="stage">
 
-    <div class="paper-back one"></div>
-    <div class="paper-back two"></div>
+      <div class="paper-back one"><div class="paper-tex"></div><div class="sheen-wrap"><div class="sheen" data-gain=".5"></div></div></div>
+      <div class="paper-back two"><div class="paper-tex"></div><div class="sheen-wrap"><div class="sheen" data-gain=".5"></div></div></div>
+      <div class="paper-back three"><div class="paper-tex"></div></div>
 
-    <!-- نامه -->
+      <div class="env-shadow" id="envShadow"></div>
+      <div class="env-contact"></div>
 
-    <article class="letter" id="letter">
-      <div class="letter-content">
+      <div class="env-sway" id="envSway">
+        <div class="envelope" id="envelope">
 
-        <div class="pages" id="pages">
+          <!-- داخل پاکت -->
+          <div class="env-lining front-part"></div>
 
-          <section class="page active">
-            <h2>My Harley Quinn</h2>
-            <p>
-              Some letters are written to be read
-              and some are written because silence
-              has become too heavy to carry
-            </p>
-            <div class="page-divider"></div>
-            <p>
-              This one belongs to you
-              and only you
-            </p>
-          </section>
+          <!-- در پاکت -->
+          <div class="flap-wrap front-part" id="flapWrap">
+            <div class="flap-sway" id="flapSway">
 
-          <section class="page">
-            <h2>A little secret</h2>
-            <p>
-              There are things that ordinary words
-              can never explain
-            </p>
-            <p>
-              So I left a little of them here
-              between the shadows and the ink
-              where they can wait for you
-            </p>
-          </section>
+              <div class="flap-face flap-out">
+                <svg viewBox="0 0 330 122" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="gFo" x1=".15" y1="0" x2=".85" y2="1">
+                      <stop offset="0" stop-color="#85333f"/>
+                      <stop offset=".55" stop-color="#5d1c2c"/>
+                      <stop offset="1" stop-color="#3b111c"/>
+                    </linearGradient>
+                    <clipPath id="fClip"><path d="M0 0H330L165 122Z"/></clipPath>
+                  </defs>
+                  <path d="M0 0H330L165 122Z" fill="url(#gFo)"/>
+                  <g clip-path="url(#fClip)">
+                    <rect width="330" height="122" filter="url(#grain)" opacity=".28" style="mix-blend-mode:multiply"/>
+                  </g>
+                  <path d="M0 0L165 122L330 0" fill="none" stroke="#000" stroke-opacity=".42" stroke-width="2" transform="translate(0 1.6)" vector-effect="non-scaling-stroke"/>
+                  <path d="M0 0L165 122L330 0" fill="none" stroke="#f2bdb2" stroke-opacity=".36" stroke-width="1" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <div class="flap-shade" id="shadeOut"></div>
+              </div>
 
-          <section class="page">
-            <h2>For you</h2>
-            <p>
-              You do not have to be strong
-              every single moment
-            </p>
-            <div class="page-divider"></div>
-            <p>
-              Even the darkest nights eventually
-              give way to morning
-            </p>
-          </section>
+              <div class="flap-face flap-in">
+                <svg viewBox="0 0 330 122" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="gFi" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#4a1724"/>
+                      <stop offset="1" stop-color="#5f2230"/>
+                    </linearGradient>
+                    <pattern id="lin" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                      <path d="M0 0H9M0 0V9" stroke="#dc9682" stroke-opacity=".12" stroke-width=".8"/>
+                    </pattern>
+                  </defs>
+                  <path d="M0 0H330L165 122Z" fill="url(#gFi)"/>
+                  <path d="M0 0H330L165 122Z" fill="url(#lin)"/>
+                  <path d="M0 0L165 122L330 0" fill="none" stroke="#f2bdb2" stroke-opacity=".3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <div class="flap-shade" id="shadeIn"></div>
+              </div>
 
-          <section class="page">
-            <h2>The last page</h2>
-            <p>
-              Maybe the secret was never hidden
-              in the letter itself
-            </p>
-            <p>
-              Maybe it was always in the person
-              for whom it was written
-            </p>
-          </section>
+            </div>
+          </div>
 
-        </div>
+          <!-- سایه‌ی در روی جلوی پاکت (وقتی بسته است) -->
+          <div class="flap-shadow front-part" id="flapShadow">
+            <svg viewBox="0 0 330 122" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0 0H330L165 122Z" fill="#000" fill-opacity=".6"/>
+            </svg>
+          </div>
 
-        <div class="page-footer" id="pageNumber">01</div>
+          <!-- نامه -->
+          <div class="letter-slot front-part" id="letterSlot">
+            <div class="letter-shadow" id="letterShadow"></div>
+            <div class="letter-sway" id="letterSway">
+              <article class="letter" id="letter">
+                <div class="paper-tex"></div>
+                <div class="stains"></div>
 
-        <div class="page-controls" id="pageControls">
-          <button id="prevBtn" type="button" disabled>
-            Previous
+                <div class="letter-content" id="letterContent">
+                  <div class="pages" id="pages">
+
+                    <section class="page active">
+                      <h2>My Harley Quinn</h2>
+                      <p>
+                        Some letters are written to be read
+                        and some are written because silence
+                        has become too heavy to carry
+                      </p>
+                      <div class="page-divider"></div>
+                      <p>
+                        This one belongs to you
+                        and only you
+                      </p>
+                    </section>
+
+                    <section class="page">
+                      <h2>A little secret</h2>
+                      <p>
+                        There are things that ordinary words
+                        can never explain
+                      </p>
+                      <p>
+                        So I left a little of them here
+                        between the shadows and the ink
+                        where they can wait for you
+                      </p>
+                    </section>
+
+                    <section class="page">
+                      <h2>For you</h2>
+                      <p>
+                        You do not have to be strong
+                        every single moment
+                      </p>
+                      <div class="page-divider"></div>
+                      <p>
+                        Even the darkest nights eventually
+                        give way to morning
+                      </p>
+                    </section>
+
+                    <section class="page">
+                      <h2>The last page</h2>
+                      <p>
+                        Maybe the secret was never hidden
+                        in the letter itself
+                      </p>
+                      <p>
+                        Maybe it was always in the person
+                        for whom it was written
+                      </p>
+                    </section>
+
+                  </div>
+
+                  <div class="page-footer" id="pageNumber" aria-hidden="true">01</div>
+
+                  <div class="page-controls">
+                    <button id="prevBtn" type="button" disabled>Previous</button>
+                    <span class="page-count" id="pageCount" aria-live="polite">1 / 4</span>
+                    <button id="nextBtn" type="button">Next page</button>
+                  </div>
+                </div>
+
+                <div class="sheen-wrap"><div class="sheen" data-gain="1"></div></div>
+                <div class="creases" id="creases"></div>
+              </article>
+            </div>
+          </div>
+
+          <!-- جلوی پاکت -->
+          <div class="pocket front-part">
+            <svg class="pocket-svg" viewBox="0 0 330 200" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="gL" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#7c3040"/>
+                  <stop offset="1" stop-color="#4a1521"/>
+                </linearGradient>
+                <linearGradient id="gR" x1="1" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#65232f"/>
+                  <stop offset="1" stop-color="#3a1019"/>
+                </linearGradient>
+                <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#6c2736"/>
+                  <stop offset="1" stop-color="#390f19"/>
+                </linearGradient>
+                <clipPath id="pClip"><path d="M0 0L165 108L330 0V200H0Z"/></clipPath>
+              </defs>
+              <path d="M0 0L165 108L0 200Z" fill="url(#gL)"/>
+              <path d="M330 0L165 108L330 200Z" fill="url(#gR)"/>
+              <path d="M0 200L165 108L330 200Z" fill="url(#gB)"/>
+              <g clip-path="url(#pClip)">
+                <rect width="330" height="200" filter="url(#grain)" opacity=".28" style="mix-blend-mode:multiply"/>
+              </g>
+              <path d="M0 200L165 108L330 200" fill="none" stroke="#000" stroke-opacity=".48" stroke-width="2.2" transform="translate(0 1.6)" vector-effect="non-scaling-stroke"/>
+              <path d="M0 200L165 108L330 200" fill="none" stroke="#e8a9a0" stroke-opacity=".3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <path d="M0 0L165 108L330 0" fill="none" stroke="#f0b8ae" stroke-opacity=".4" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <div class="sheen-wrap"><div class="sheen" data-gain=".7"></div></div>
+          </div>
+
+          <div class="address front-part">
+            <span>For Harley Quinn</span>
+            <span class="line"></span>
+          </div>
+
+          <!-- بقایای مومِ شکسته -->
+          <div class="residue front-part" id="residue">
+            <svg viewBox="0 0 56 40" aria-hidden="true">
+              <path d="M6 20Q10 6 22 8Q29 14 24 25Q14 31 6 20Z" fill="url(#waxG)"/>
+              <path d="M34 22Q40 10 50 14Q55 24 46 33Q38 33 34 22Z" fill="url(#waxG)"/>
+            </svg>
+          </div>
+
+          <!-- مهر موم -->
+          <button class="seal front-part" id="sealBtn" type="button" aria-label="Break the seal and open the letter">
+            <span class="seal-glow"></span>
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <g filter="url(#waxRough)">
+                <circle cx="50" cy="50" r="44" fill="url(#waxG)"/>
+              </g>
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#ff9696" stroke-opacity=".22" stroke-width="1.6"/>
+              <circle cx="50" cy="50" r="33" fill="none" stroke="#1e0008" stroke-opacity=".35" stroke-width="1.6"/>
+
+              <!-- گربه: یک نسخه روشن برای برجستگی + یک نسخه تیره -->
+              <g transform="translate(26 26) scale(.48)">
+                <g transform="translate(1.6 1.6)" fill="#ffb0b0" fill-opacity=".32">
+                  <path d="M18 38 L15 8 Q15 5 19 9 L38 25 Q50 19 62 25 L81 9 Q85 5 85 9 L82 39 Q93 53 83 69 Q72 87 50 87 Q28 87 17 69 Q7 53 18 38 Z"/>
+                </g>
+                <g fill="#2a0912">
+                  <path d="M18 38 L15 8 Q15 5 19 9 L38 25 Q50 19 62 25 L81 9 Q85 5 85 9 L82 39 Q93 53 83 69 Q72 87 50 87 Q28 87 17 69 Q7 53 18 38 Z"/>
+                  <path d="M29 48 Q38 39 45 49 Q38 57 29 48 Z" fill="#6b1b2a"/>
+                  <path d="M55 49 Q62 39 71 48 Q62 57 55 49 Z" fill="#6b1b2a"/>
+                  <path d="M44 61 L50 65 L56 61 Q53 72 50 72 Q47 72 44 61 Z" fill="#6b1b2a"/>
+                </g>
+                <path d="M33 48 L39 48 L36 52 Z" fill="#ff7a7a" fill-opacity=".8"/>
+                <path d="M61 48 L67 48 L64 52 Z" fill="#ff7a7a" fill-opacity=".8"/>
+              </g>
+
+              <ellipse class="gloss" cx="34" cy="28" rx="15" ry="8" fill="#ffd6cc" fill-opacity=".34" transform="rotate(-30 34 28)"/>
+            </svg>
           </button>
 
-          <span class="page-count" id="pageCount">1 / 4</span>
+          <!-- پشت پاکت (پایان) -->
+          <div class="back-view">
+            <div class="back-inscription">
+              <span class="small">For the one who found it</span>
+              <span class="secret">Somewhere between<br>the ink and the silence</span>
+              <span class="ornament">✦ &nbsp; ✦ &nbsp; ✦</span>
+            </div>
+            <div class="sheen-wrap"><div class="sheen" data-gain=".7"></div></div>
+          </div>
 
-          <button id="nextBtn" type="button">
-            Next page
-          </button>
-        </div>
-
-      </div>
-    </article>
-
-    <!-- پاکت دوطرفه -->
-
-    <div class="envelope" id="envelope">
-
-      <!-- روی پاکت -->
-
-      <div class="envelope-face envelope-front">
-
-        <div class="envelope-folds"></div>
-
-        <div class="address">
-          <span>For Harley Quinn</span>
-          <span class="line"></span>
-        </div>
-
-        <div class="flap" id="flap"></div>
-
-        <button class="seal" id="sealBtn"
-                type="button" aria-label="Open the letter">
-
-          <svg class="cat-mark"
-               viewBox="0 0 100 100"
-               xmlns="http://www.w3.org/2000/svg">
-
-            <path class="cat"
-              d="M18 38 L15 8 Q15 5 19 9 L38 25
-                 Q50 19 62 25 L81 9 Q85 5 85 9
-                 L82 39 Q93 53 83 69 Q72 87 50 87
-                 Q28 87 17 69 Q7 53 18 38 Z"/>
-
-            <path class="cat"
-              d="M29 48 Q38 39 45 49 Q38 57 29 48 Z"/>
-
-            <path class="cat"
-              d="M55 49 Q62 39 71 48 Q62 57 55 49 Z"/>
-
-            <path class="cat"
-              d="M44 61 L50 65 L56 61
-                 Q53 72 50 72 Q47 72 44 61 Z"/>
-
-            <path class="eye" d="M33 48 L39 48 L36 52 Z"/>
-            <path class="eye" d="M61 48 L67 48 L64 52 Z"/>
-
-          </svg>
-        </button>
-      </div>
-
-      <!-- پشت پاکت -->
-
-      <div class="envelope-face envelope-back">
-        <div class="back-inscription">
-          <span class="small">For the one who found it</span>
-          <span class="secret">Somewhere between<br>the ink and the silence</span>
-          <span class="ornament">✦ &nbsp; ✦ &nbsp; ✦</span>
         </div>
       </div>
 
     </div>
-
   </div>
 
-  <div class="seal-caption" id="sealCaption">
-    Break the seal...
-  </div>
+  <div class="foot-slot">
+    <div class="seal-caption" id="sealCaption">Break the seal...</div>
 
-  <div class="return-area" id="returnArea">
-    <p>The last page has been read</p>
-    <button class="return-button" id="returnBtn" type="button">
-      Return the letter
-    </button>
-  </div>
+    <div class="return-area" id="returnArea">
+      <p>The last page has been read</p>
+      <button class="return-button" id="returnBtn" type="button">Return the letter</button>
+    </div>
 
-  <section class="ending" id="ending">
-    <h2>Some secrets stay</h2>
-    <p>
-      Not everything needs to be seen
-      to be remembered
-    </p>
-  </section>
+    <section class="ending" id="ending">
+      <h2>Some secrets stay</h2>
+      <p>Not everything needs to be seen to be remembered</p>
+    </section>
+  </div>
 
 </main>
 
+<canvas id="fx" aria-hidden="true"></canvas>
+
 <script>
-const scene = document.getElementById("scene");
-const sealBtn = document.getElementById("sealBtn");
-const pages = Array.from(document.querySelectorAll(".page"));
+(() => {
+  'use strict';
 
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const pageCount = document.getElementById("pageCount");
-const pageNumber = document.getElementById("pageNumber");
+  const $ = (id) => document.getElementById(id);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const returnArea = document.getElementById("returnArea");
-const returnBtn = document.getElementById("returnBtn");
+  const scene = $('scene'), envelope = $('envelope'), envSway = $('envSway');
+  const envShadow = $('envShadow');
+  const flapWrap = $('flapWrap'), flapSway = $('flapSway'), flapShadow = $('flapShadow');
+  const shadeOut = $('shadeOut'), shadeIn = $('shadeIn');
+  const letterSlot = $('letterSlot'), letterShadow = $('letterShadow'), letterSway = $('letterSway');
+  const letter = $('letter'), letterContent = $('letterContent'), creases = $('creases');
+  const sealBtn = $('sealBtn'), residue = $('residue');
+  const prevBtn = $('prevBtn'), nextBtn = $('nextBtn');
+  const pageCount = $('pageCount'), pageNumber = $('pageNumber');
+  const returnArea = $('returnArea'), returnBtn = $('returnBtn');
+  const pages = Array.from(document.querySelectorAll('.page'));
+  const sheens = Array.from(document.querySelectorAll('.sheen'));
+  const gloss = document.querySelector('.gloss');
 
-let currentPage = 0;
-let opened = false;
-let movingPage = false;
-let returning = false;
+  /* ───────── اندازه‌ی صحنه روی صفحه‌های کوتاه ───────── */
+  function fit() {
+    const f = Math.min(1, Math.max(.6, (window.innerHeight - 210) / 500));
+    document.documentElement.style.setProperty('--fit', f.toFixed(3));
+  }
 
-function openLetter() {
-  if (opened || returning) return;
+  /* ───────── نور شمع (مدل ساده‌ی شعله) ───────── */
+  const light = { fl: 1, lx: 0, ly: 0 };
+  let flTarget = 1, nextShift = 0;
 
-  opened = true;
-  scene.classList.add("open");
+  function updateLight(t, dt) {
+    if (t > nextShift) {
+      flTarget = .86 + Math.random() * .2;
+      nextShift = t + 60 + Math.random() * 320;
+      if (Math.random() < .04) flTarget = .72;        // گاهی یک تپش بلند
+    }
+    light.fl += (flTarget - light.fl) * Math.min(1, dt * 9);
+    light.lx = (Math.sin(t * .0011) * .5 + Math.sin(t * .00277 + 1.7) * .35 + Math.sin(t * .0061 + .4) * .15) * .8
+             + (light.fl - 1) * 2;
+    light.ly = Math.sin(t * .0014 + 2.1) * .5 + Math.sin(t * .0043) * .3;
+  }
 
-  window.setTimeout(() => {
-    scene.classList.add("reading");
-    updatePages();
-  }, 900);
-}
+  /* ───────── حالت‌ها ───────── */
+  let state = 'closed';            // closed → opening → reading → returning → finished
+  let lift = 0, liftTarget = 0;    // ارتفاع نامه از روی میز (برای سایه و لرزش)
+  let flapSwayOn = true;
+  let cur = 0, moving = false;
 
-function updatePages() {
-  pages.forEach((page, index) => {
-    page.classList.toggle("active", index === currentPage);
-    page.classList.remove("leave-left", "enter-right");
+  /* ───────── هر فریم: نور، سایه، لرزش ظریف ───────── */
+  function applyLight(I, t, dt) {
+    lift += (liftTarget - lift) * Math.min(1, dt * 3.2);
+
+    // روشنایی سطح‌ها (نور گرم شمع از بالا-چپ)
+    const sx = light.lx * 16, sy = light.ly * 12;
+    for (const s of sheens) {
+      const g = parseFloat(s.dataset.gain) || 1;
+      s.style.transform = `translate3d(${sx.toFixed(1)}px,${sy.toFixed(1)}px,0)`;
+      s.style.opacity = Math.min(1, I * g * .95).toFixed(3);
+    }
+    gloss.style.transform = `translate(${(light.lx * 2.2).toFixed(2)}px,${(light.ly * 1.6).toFixed(2)}px)`;
+    gloss.style.opacity = Math.min(1, I * .9).toFixed(3);
+
+    // سایه‌ها: جهتشان با تکان شعله کمی جابه‌جا می‌شود
+    envShadow.style.transform = `translate(${(8 - light.lx * 3).toFixed(2)}px,${(13 - light.ly * 2).toFixed(2)}px) scale(.97)`;
+    envShadow.style.opacity = (.62 * Math.min(1, I)).toFixed(3);
+
+    const dx = 5 + 22 * lift - light.lx * 4;
+    const dy = 6 + 34 * lift - light.ly * 3;
+    letterShadow.style.transform = `translate(${dx.toFixed(2)}px,${dy.toFixed(2)}px) scale(.95)`;
+    letterShadow.style.opacity = (Math.max(0, (lift - .25) / .75) * .52 * (.8 + .2 * light.fl)).toFixed(3);
+
+    if (reduce) return;
+    const s = t / 1000;
+
+    // پاکتِ روی میز: تقریباً ثابت
+    envSway.style.transform =
+      `rotate(${(Math.sin(s * .7) * .07).toFixed(3)}deg) translate3d(0,${(Math.sin(s * .6) * .25).toFixed(2)}px,0)`;
+
+    // در بسته: با گرمای شمع خیلی کم می‌لرزد
+    if (flapSwayOn) {
+      flapSway.style.transform =
+        `rotateX(${(Math.sin(s * 1.3) * .5 + Math.sin(s * 3.1 + 1) * .25 + Math.sin(s * 19) * .04).toFixed(3)}deg)`;
+    }
+
+    // نامه در هوا: نفس + لرزش دست
+    const a = lift;
+    const rx = Math.sin(s * .9) * .9 * a + Math.sin(s * 2.3 + .5) * .25 * a;
+    const ry = Math.sin(s * .7 + 1.2) * .9 * a + Math.sin(s * 1.9) * .22 * a;
+    const rz = Math.sin(s * .55 + .4) * .35 * a;
+    const tx = Math.sin(s * .8) * 1.1 * a + Math.sin(s * 47) * .07 * a;
+    const ty = Math.sin(s * 1.05 + 2) * 1.2 * a + Math.sin(s * 31 + 2) * .06 * a;
+    letterSway.style.transform =
+      `rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg) rotate(${rz.toFixed(3)}deg) translate3d(${tx.toFixed(2)}px,${ty.toFixed(2)}px,0)`;
+  }
+
+  /* ───────── بوم افکت‌ها ───────── */
+  const cv = $('fx');
+  const ctx = cv.getContext('2d');
+  const S = .6;
+  let W = 0, H = 0;
+
+  function makeSprite(size, stops) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d');
+    const r = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    stops.forEach(([o, col]) => r.addColorStop(o, col));
+    g.fillStyle = r;
+    g.fillRect(0, 0, size, size);
+    return c;
+  }
+
+  function makeSmokeSprite(size, seed) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d');
+    let s = seed;
+    const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+    for (let i = 0; i < 9; i++) {
+      const x = size * (.28 + .44 * rnd()), y = size * (.28 + .44 * rnd()), r = size * (.16 + .2 * rnd());
+      const gr = g.createRadialGradient(x, y, 0, x, y, r);
+      gr.addColorStop(0, 'rgba(225,212,202,.55)');
+      gr.addColorStop(1, 'rgba(225,212,202,0)');
+      g.fillStyle = gr;
+      g.fillRect(0, 0, size, size);
+    }
+    return c;
+  }
+
+  const smokeSprites = [3, 14, 25].map((sd) => makeSmokeSprite(128, sd));
+  const emberSprite = makeSprite(32, [[0, 'rgba(255,230,170,1)'], [.3, 'rgba(255,150,60,.7)'], [1, 'rgba(255,90,20,0)']]);
+  const moteSprite  = makeSprite(24, [[0, 'rgba(255,235,200,1)'], [.4, 'rgba(255,210,150,.5)'], [1, 'rgba(255,190,120,0)']]);
+
+  const smoke = [], embers = [];
+  let motes = [];
+  let nextAmbient = 600, nextStream = 2200, streamEnd = 0, nextPuff = 0, streamX = 0, streamPh = 0, nextEmber = 4000;
+
+  function resizeFx() {
+    W = Math.ceil(window.innerWidth * S);
+    H = Math.ceil(window.innerHeight * S);
+    cv.width = W;
+    cv.height = H;
+    motes = Array.from({ length: 34 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * 4, vy: (Math.random() - .75) * 3.5,
+      sz: 1.2 + Math.random() * 2.6, ph: Math.random() * 6.28, fr: .5 + Math.random() * 1.6
+    }));
+  }
+
+  function newSmoke(x, ph, strong) {
+    const r0 = 12 + Math.random() * 10;
+    smoke.push({
+      x, y: H + r0, vx: 5 + Math.random() * 9, vy: -(30 + Math.random() * 20),
+      age: 0, life: 9 + Math.random() * 5, ph, r0, r1: r0 * (4.2 + Math.random() * 2.6),
+      a: (strong ? .11 : .07) * (.7 + Math.random() * .6),
+      s: smokeSprites[(Math.random() * 3) | 0],
+      rot: Math.random() * 6.28, vr: (Math.random() - .5) * .25
+    });
+  }
+
+  function stepFx(t, dt) {
+    // دود: تکه‌های پراکنده + هر چند ثانیه یک رشته‌ی کشیده که از صحنه رد می‌شود
+    if (t > nextAmbient) { newSmoke(Math.random() * W * .8, Math.random() * 6.28, false); nextAmbient = t + 1100 + Math.random() * 1300; }
+    if (t > nextStream) {
+      streamX = W * (.05 + Math.random() * .55);
+      streamPh = Math.random() * 6.28;
+      streamEnd = t + 2600;
+      nextPuff = t;
+      nextStream = t + 8000 + Math.random() * 7000;
+    }
+    if (t < streamEnd && t > nextPuff) {
+      newSmoke(streamX + (Math.random() - .5) * 14, streamPh + Math.random() * .5, true);
+      nextPuff = t + 90;
+    }
+    for (let i = smoke.length - 1; i >= 0; i--) {
+      const p = smoke[i];
+      p.age += dt;
+      if (p.age >= p.life) { smoke.splice(i, 1); continue; }
+      p.x += (p.vx + Math.sin(p.age * .9 + p.ph) * 13 + Math.sin(p.age * .37 + p.ph * 2) * 9) * dt;
+      p.y += p.vy * dt;
+      p.vx += 1.6 * dt;
+    }
+
+    // جرقه‌های ریز
+    if (t > nextEmber) {
+      embers.push({ x: Math.random() * W * .7, y: H + 4, vx: (Math.random() - .3) * 10, vy: -(26 + Math.random() * 28),
+                    age: 0, life: 4 + Math.random() * 3, ph: Math.random() * 6.28, sz: 2.5 + Math.random() * 3 });
+      nextEmber = t + 1800 + Math.random() * 3000;
+    }
+    for (let i = embers.length - 1; i >= 0; i--) {
+      const e = embers[i];
+      e.age += dt;
+      if (e.age >= e.life) { embers.splice(i, 1); continue; }
+      e.x += (e.vx + Math.sin(e.age * 3 + e.ph) * 10) * dt;
+      e.y += e.vy * dt;
+    }
+
+    // گرد و غبار
+    for (const m of motes) {
+      m.x += m.vx * dt; m.y += m.vy * dt;
+      if (m.x < -5) m.x = W + 5; else if (m.x > W + 5) m.x = -5;
+      if (m.y < -5) m.y = H + 5; else if (m.y > H + 5) m.y = -5;
+    }
+  }
+
+  function drawFx(t, I, igE, withParticles) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.clearRect(0, 0, W, H);
+
+    const lx = W * .2 + light.lx * W * .02;
+    const ly = H * .14 + light.ly * H * .015;
+    const R = Math.hypot(W, H);
+
+    // تاریکی گوشه‌ها (با تپش شعله کمی تغییر می‌کند)
+    const vcx = W * .5 + (lx - W * .5) * .35, vcy = H * .45 + (ly - H * .45) * .2;
+    let g = ctx.createRadialGradient(vcx, vcy, R * .12, vcx, vcy, R * .62);
+    g.addColorStop(0, 'rgba(5,2,3,0)');
+    g.addColorStop(.55, 'rgba(5,2,3,.28)');
+    g.addColorStop(1, 'rgba(3,1,2,.82)');
+    ctx.globalAlpha = Math.min(1, .85 + (1 - light.fl) * .8);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // درخشش گرم شمع
+    g = ctx.createRadialGradient(lx, ly, 0, lx, ly, R * .75);
+    g.addColorStop(0, 'rgba(255,175,95,.22)');
+    g.addColorStop(.35, 'rgba(255,145,65,.09)');
+    g.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.globalAlpha = Math.min(1, I);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    if (withParticles) {
+      // دود
+      for (const p of smoke) {
+        const k = p.age / p.life;
+        const r = p.r0 + (p.r1 - p.r0) * Math.pow(k, .7);
+        ctx.globalAlpha = p.a * Math.pow(Math.sin(Math.PI * k), 1.2) * Math.min(1, igE * 1.2);
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot + p.vr * p.age);
+        ctx.drawImage(p.s, -r, -r, r * 2, r * 2);
+        ctx.restore();
+      }
+
+      ctx.globalCompositeOperation = 'lighter';
+
+      // گرد و غبار (فقط نزدیک نور دیده می‌شود و سوسو می‌زند)
+      for (const m of motes) {
+        const d = Math.hypot(m.x - lx, m.y - ly) / R;
+        const prox = Math.max(0, 1 - d * 1.5);
+        const tw = .5 + .5 * Math.sin(t * .001 * m.fr + m.ph);
+        const a = (.12 + .55 * prox) * tw * I;
+        if (a < .01) continue;
+        ctx.globalAlpha = Math.min(1, a);
+        const sz = m.sz * 3.5;
+        ctx.drawImage(moteSprite, m.x - sz / 2, m.y - sz / 2, sz, sz);
+      }
+
+      // جرقه
+      for (const e of embers) {
+        const k = e.age / e.life;
+        ctx.globalAlpha = Math.sin(Math.PI * k) * (.55 + .45 * Math.sin(e.age * 14 + e.ph)) * .85 * igE;
+        const sz = e.sz * 4;
+        ctx.drawImage(emberSprite, e.x - sz / 2, e.y - sz / 2, sz, sz);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
+    // لحظه‌ی روشن شدن: از تاریکی کامل شروع می‌شود
+    if (igE < 1) {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = `rgba(0,0,0,${(1 - igE).toFixed(3)})`;
+      ctx.fillRect(0, 0, W, H);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  let t0 = null, last = 0, firstDrawn = false;
+
+  function frame(ts) {
+    if (t0 === null) { t0 = ts; last = ts; }
+    const dt = Math.min(.05, (ts - last) / 1000);
+    last = ts;
+    const t = ts - t0;
+
+    updateLight(t, dt);
+    const ig = Math.min(1, t / 3000);
+    const igE = ig * ig * (3 - 2 * ig);
+    const I = igE * light.fl;
+
+    stepFx(t, dt);
+    drawFx(t, I, igE, true);
+    applyLight(I, t, dt);
+
+    if (!firstDrawn) {
+      firstDrawn = true;
+      cv.style.background = 'transparent';
+      requestAnimationFrame(() => scene.classList.add('lit'));
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function staticFrame() {
+    light.fl = 1; light.lx = 0; light.ly = 0;
+    drawFx(0, 1, 1, false);
+    applyLight(1, 0, 1);
+    cv.style.background = 'transparent';
+    scene.classList.add('lit');
+  }
+
+  /* ───────── کمک‌ها برای انیمیشن‌ها ───────── */
+  const sleep = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+  const later = (ms, fn) => setTimeout(fn, reduce ? 0 : ms);
+
+  function play(el, frames, ms, easing, delay) {
+    const a = el.animate(frames, {
+      duration: reduce ? 1 : ms,
+      easing: easing || 'ease',
+      delay: reduce ? 0 : (delay || 0),
+      fill: 'forwards'
+    });
+    return a.finished.catch(() => {});
+  }
+
+  const SEAL   = 'translateX(-50%) rotate(-5deg)';
+  const T_IN    = 'translate(-50%, 15px) scale(.6) rotate(0deg)';
+  const T_MID   = 'translate(-50%, -150px) scale(.7) rotate(-.8deg)';
+  const T_RAISE = 'translate(-50%, -248px) scale(.78) rotate(-1.5deg)';
+  const T_PULL  = 'translate(-50%, -285px) scale(1.04) rotate(.6deg)';
+  const T_OUT   = 'translate(-50%, -270px) scale(1) rotate(0deg)';
+  // خم شدنِ کاغذ موقع تا شدن / باز شدن
+  const BEND = [
+    { transform: 'perspective(700px) rotateX(0deg) scaleY(1)' },
+    { transform: 'perspective(700px) rotateX(15deg) scaleY(.87)', offset: .5 },
+    { transform: 'perspective(700px) rotateX(0deg) scaleY(1)' }
+  ];
+
+  /* ───────── تکه‌های مومِ پریده ───────── */
+  function crumbs() {
+    if (reduce) return;
+    for (let i = 0; i < 8; i++) {
+      const el = document.createElement('i');
+      el.className = 'crumb';
+      const s = 3 + Math.random() * 6;
+      el.style.width = s + 'px';
+      el.style.height = (s * (.6 + Math.random() * .6)) + 'px';
+      el.style.borderRadius = (30 + Math.random() * 40) + '% ' + (30 + Math.random() * 40) + '%';
+      el.style.marginLeft = (-s / 2 + (Math.random() - .5) * 26) + 'px';
+      envelope.appendChild(el);
+      const dx = (Math.random() - .5) * 90, up = 10 + Math.random() * 26;
+      const fall = 50 + Math.random() * 60, rot = (Math.random() - .5) * 540;
+      const a = el.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx * .55}px,${-up}px) rotate(${rot * .5}deg)`, opacity: 1, offset: .3, easing: 'ease-in' },
+        { transform: `translate(${dx}px,${fall}px) rotate(${rot}deg)`, opacity: 0 }
+      ], { duration: 850 + Math.random() * 350, easing: 'ease-out', fill: 'forwards' });
+      a.finished.then(() => el.remove()).catch(() => el.remove());
+    }
+  }
+
+  /* ───────── صفحه‌ها ───────── */
+  function syncUI() {
+    const last = cur === pages.length - 1;
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = last;
+    nextBtn.textContent = last ? 'Last page' : 'Next page';
+    pageCount.textContent = `${cur + 1} / ${pages.length}`;
+    pageNumber.textContent = String(cur + 1).padStart(2, '0');
+    returnArea.classList.toggle('show', last && state === 'reading');
+  }
+
+  function go(dir) {
+    if (moving || state !== 'reading') return;
+    const n = cur + dir;
+    if (n < 0 || n >= pages.length) return;
+    moving = true;
+
+    const o = pages[cur], nw = pages[n];
+    nw.style.transition = 'none';
+    nw.style.setProperty('--in', (dir * 30) + 'px');
+    void nw.offsetWidth;
+    nw.style.transition = '';
+    o.style.setProperty('--out', (-dir * 30) + 'px');
+
+    o.classList.remove('active');
+    o.classList.add('out');
+    nw.classList.add('active');
+    nw.scrollTop = 0;
+    cur = n;
+    syncUI();
+
+    setTimeout(() => { o.classList.remove('out'); moving = false; }, reduce ? 0 : 460);
+  }
+
+  /* ───────── باز کردن نامه ───────── */
+  async function openLetter() {
+    if (state !== 'closed') return;
+    state = 'opening';
+    sealBtn.disabled = true;
+    scene.classList.add('opened');
+
+    // ۱) مهر فشرده می‌شود، ترک می‌خورد و می‌افتد
+    later(300, () => {
+      crumbs();
+      play(residue, [{ opacity: 0 }, { opacity: 1 }], 200);
+      play(envelope, [
+        { transform: 'translateY(0)' }, { transform: 'translateY(1.6px)' }, { transform: 'translateY(0)' }
+      ], 260);
+    });
+    await play(sealBtn, [
+      { transform: SEAL, opacity: 1, offset: 0 },
+      { transform: SEAL + ' scale(.9)', opacity: 1, offset: .25, easing: 'ease-out' },
+      { transform: 'translateX(-50%) rotate(-8deg) scale(1.07)', opacity: 1, offset: .42, easing: 'ease-in' },
+      { transform: 'translateX(-50%) translateY(34px) rotate(26deg) scale(.82)', opacity: 0, offset: 1 }
+    ], 700, 'linear');
+
+    // ۲) در پاکت باز می‌شود (وسط چرخش پشت نامه می‌رود)
+    flapSwayOn = false;
+    flapSway.style.transform = 'none';
+    later(420, () => envelope.classList.add('flap-open'));
+    play(flapShadow, [{ opacity: 1 }, { opacity: 0 }], 450);
+    play(shadeOut, [{ opacity: 0 }, { opacity: .65 }], 480, 'ease-in');
+    play(shadeIn, [{ opacity: .65 }, { opacity: 0 }], 620, 'ease-out', 480);
+    const flapP = play(flapWrap, [
+      { transform: 'rotateX(0deg)' },
+      { transform: 'rotateX(188deg)', offset: .82 },
+      { transform: 'rotateX(180deg)' }
+    ], 1150, 'cubic-bezier(.55,.05,.3,1)');
+
+    // ۳) نامه از داخل پاکت بالا می‌آید
+    await sleep(800);
+    liftTarget = .45;
+    await play(letterSlot, [
+      { transform: T_IN },
+      { transform: T_MID, offset: .55 },
+      { transform: T_RAISE }
+    ], 1250, 'cubic-bezier(.35,.55,.3,1)');
+    await flapP;
+
+    // ۴) جلو می‌آید، باز می‌شود و روی پاکت می‌ایستد
+    envelope.classList.add('letter-out');
+    liftTarget = 1;
+    play(creases, [{ opacity: 1 }, { opacity: 0 }], 1000, 'ease', 250);
+    later(500, () => letter.classList.add('revealed'));
+    play(letter, BEND, 1100, 'ease-in-out', 250);
+    play(letterContent, [
+      { opacity: 0, filter: 'blur(1.5px)' },
+      { opacity: 1, filter: 'blur(0px)' }
+    ], 900, 'ease', 500);
+    await play(letterSlot, [
+      { transform: T_RAISE },
+      { transform: T_PULL, offset: .65 },
+      { transform: T_OUT }
+    ], 1400, 'cubic-bezier(.25,.7,.25,1)');
+
+    state = 'reading';
+    syncUI();
+  }
+
+  /* ───────── برگرداندن نامه به پاکت ───────── */
+  async function returnLetter() {
+    if (state !== 'reading') return;
+    state = 'returning';
+    returnArea.classList.remove('show');
+
+    // اول تا می‌شود (عکسِ باز شدن)، بعد بالا می‌رود
+    play(letterContent, [{ opacity: 1 }, { opacity: 0 }], 600);
+    play(creases, [{ opacity: 0 }, { opacity: 1 }], 800, 'ease', 100);
+    await play(letter, BEND, 950, 'ease-in-out');
+    liftTarget = .45;
+    await play(letterSlot, [{ transform: T_OUT }, { transform: T_RAISE }], 1100, 'cubic-bezier(.4,0,.2,1)');
+
+    // پشت جلوی پاکت می‌رود و داخل می‌لغزد
+    envelope.classList.remove('letter-out');
+    await play(letterSlot, [{ transform: T_RAISE }, { transform: T_IN }], 1200, 'cubic-bezier(.4,0,.3,1)');
+    liftTarget = 0;
+
+    // در پاکت بسته می‌شود
+    later(420, () => envelope.classList.remove('flap-open'));
+    play(flapShadow, [{ opacity: 0 }, { opacity: 1 }], 500, 'ease', 500);
+    play(shadeIn, [{ opacity: 0 }, { opacity: .65 }], 480, 'ease-in');
+    play(shadeOut, [{ opacity: .65 }, { opacity: 0 }], 520, 'ease-out', 480);
+    await play(flapWrap, [
+      { transform: 'rotateX(180deg)' },
+      { transform: 'rotateX(6deg)', offset: .88 },
+      { transform: 'rotateX(0deg)' }
+    ], 1000, 'cubic-bezier(.5,0,.3,1)');
+    flapSwayOn = true;
+
+    // مهر یک بار شکسته؛ دیگر مهر نمی‌شود، فقط پاکت برمی‌گردد
+    await sleep(600);
+
+    // پاکت برگردانده می‌شود
+    await play(envelope, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(90deg)' }], 520, 'ease-in');
+    envelope.classList.add('backview');
+    await play(envelope, [{ transform: 'rotateY(-90deg)' }, { transform: 'rotateY(0deg)' }], 640, 'ease-out');
+
+    state = 'finished';
+    scene.classList.add('finished');
+  }
+
+  /* ───────── رویدادها ───────── */
+  sealBtn.addEventListener('click', openLetter);
+  prevBtn.addEventListener('click', () => go(-1));
+  nextBtn.addEventListener('click', () => go(1));
+  returnBtn.addEventListener('click', returnLetter);
+
+  document.addEventListener('keydown', (e) => {
+    if (state !== 'reading') return;
+    if (e.key === 'ArrowRight') go(1);
+    else if (e.key === 'ArrowLeft') go(-1);
   });
 
-  prevBtn.disabled = currentPage === 0;
+  window.addEventListener('resize', () => { fit(); resizeFx(); if (reduce) staticFrame(); });
 
-  pageCount.textContent =
-    `${currentPage + 1} / ${pages.length}`;
+  /* ───────── شروع ───────── */
+  fit();
+  resizeFx();
+  syncUI();
 
-  pageNumber.textContent =
-    String(currentPage + 1).padStart(2, "0");
-
-  nextBtn.textContent =
-    currentPage === pages.length - 1
-      ? "Last page"
-      : "Next page";
-
-  returnArea.style.display =
-    currentPage === pages.length - 1 ? "block" : "none";
-}
-
-function changePage(direction) {
-  if (movingPage || returning) return;
-
-  const nextIndex = currentPage + direction;
-
-  if (nextIndex < 0 || nextIndex >= pages.length) return;
-
-  movingPage = true;
-
-  const oldPage = pages[currentPage];
-  const newPage = pages[nextIndex];
-
-  // صفحه جدید از پشت صفحه قبلی وارد می‌شود
-
-  newPage.classList.remove("active", "leave-left", "enter-right");
-  newPage.classList.add("enter-right");
-
-  // اجازه می‌دهیم حالت اولیه مرورگر ثبت شود
-
-  void newPage.offsetWidth;
-
-  oldPage.classList.remove("active");
-  oldPage.classList.add("leave-left");
-
-  newPage.classList.remove("enter-right");
-  newPage.classList.add("active");
-
-  currentPage = nextIndex;
-
-  prevBtn.disabled = currentPage === 0;
-
-  pageCount.textContent =
-    `${currentPage + 1} / ${pages.length}`;
-
-  pageNumber.textContent =
-    String(currentPage + 1).padStart(2, "0");
-
-  nextBtn.textContent =
-    currentPage === pages.length - 1
-      ? "Last page"
-      : "Next page";
-
-  returnArea.style.display =
-    currentPage === pages.length - 1 ? "block" : "none";
-
-  window.setTimeout(() => {
-    oldPage.classList.remove("leave-left");
-    movingPage = false;
-  }, 480);
-}
-
-function returnLetter() {
-  if (returning || !opened) return;
-
-  returning = true;
-
-  scene.classList.remove("reading");
-  scene.classList.add("returning");
-
-  returnArea.style.display = "none";
-
-  window.setTimeout(() => {
-    scene.classList.add("finished");
-  }, 1900);
-}
-
-sealBtn.addEventListener("click", openLetter);
-
-prevBtn.addEventListener("click", () => {
-  changePage(-1);
-});
-
-nextBtn.addEventListener("click", () => {
-  if (currentPage < pages.length - 1) {
-    changePage(1);
-  }
-});
-
-returnBtn.addEventListener("click", returnLetter);
-
-updatePages();
+  if (reduce) staticFrame();
+  else requestAnimationFrame(frame);
+})();
 </script>
 
 </body>
